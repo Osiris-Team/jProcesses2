@@ -51,6 +51,7 @@ public class WindowsProcessesService extends AbstractProcessesService {
     private final String COMMANDLINE_PROPNAME = "CommandLine";
     private final String CREATIONDATE_PROPNAME = "CreationDate";
     private final String CAPTION_PROPNAME = "Caption";
+    private final String PARENT_PID_PROPNAME = "ParentProcessId";
     private final WMI4Java wmi4Java;
     private Map<String, String> processMap;
 
@@ -132,7 +133,7 @@ public class WindowsProcessesService extends AbstractProcessesService {
                     .properties(Arrays.asList(CAPTION_PROPNAME, PROCESSID_PROPNAME, NAME_PROPNAME,
                             USERMODETIME_PROPNAME, COMMANDLINE_PROPNAME,
                             WORKINGSETSIZE_PROPNAME, CREATIONDATE_PROPNAME,
-                            VIRTUALSIZE_PROPNAME, PRIORITY_PROPNAME))
+                            VIRTUALSIZE_PROPNAME, PRIORITY_PROPNAME, PARENT_PID_PROPNAME))
                     .filters(Collections.singletonList("Name like '%" + name + "%'"))
                     .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
         }
@@ -266,10 +267,10 @@ public class WindowsProcessesService extends AbstractProcessesService {
                 info.time = (process.get("proc_time"));
                 info.command = (process.get("command"));
                 info.cpuUsage = (process.get("cpu_usage"));
-                info.physicalMemory = (process.get("physical_memory"));
+                info.kbWorkingSet = (process.get("physical_memory"));
                 info.startTime = (process.get("start_time"));
                 info.user = (process.get("user"));
-                info.virtualMemory = (process.get("virtual_memory"));
+                info.kbVirtualMemory = (process.get("virtual_memory"));
                 info.priority = (process.get("priority"));
 
                 return info;

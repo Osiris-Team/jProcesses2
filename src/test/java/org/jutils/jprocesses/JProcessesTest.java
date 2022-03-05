@@ -41,6 +41,7 @@ public class JProcessesTest {
     public void tearDown() {
     }
 
+
     /**
      * Test of getProcessList method, of class JProcesses.
      */
@@ -56,8 +57,8 @@ public class JProcessesTest {
             System.out.println("Process Name: " + processInfo.name);
             System.out.println("Process Time: " + processInfo.time);
             System.out.println("User: " + processInfo.user);
-            System.out.println("Virtual Memory: " + processInfo.virtualMemory);
-            System.out.println("Physical Memory: " + processInfo.physicalMemory);
+            System.out.println("Virtual Memory: " + processInfo.kbVirtualMemory);
+            System.out.println("Physical Memory: " + processInfo.kbWorkingSet);
             System.out.println("CPU usage: " + processInfo.cpuUsage);
             System.out.println("Start Time: " + processInfo.startTime);
             System.out.println("Start DateTime: "
@@ -90,8 +91,8 @@ public class JProcessesTest {
             System.out.println("Process Name: " + processInfo.name);
             System.out.println("Process Time: " + processInfo.time);
             System.out.println("User: " + processInfo.user);
-            System.out.println("Virtual Memory: " + processInfo.virtualMemory);
-            System.out.println("Physical Memory: " + processInfo.physicalMemory);
+            System.out.println("Virtual Memory: " + processInfo.kbVirtualMemory);
+            System.out.println("Physical Memory: " + processInfo.kbWorkingSet);
             System.out.println("CPU usage: " + processInfo.cpuUsage);
             System.out.println("Start Time: " + processInfo.startTime);
             System.out.println("Priority: " + processInfo.priority);

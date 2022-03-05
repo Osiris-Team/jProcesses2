@@ -151,10 +151,10 @@ public class UnixProcessesService extends AbstractProcessesService {
             info.time = (processData.get("proc_time"));
             info.command = (processData.get("command"));
             info.cpuUsage = (processData.get("cpu_usage"));
-            info.physicalMemory = (processData.get("physical_memory"));
+            info.kbWorkingSet = (processData.get("physical_memory"));
             info.startTime = (processData.get("start_time"));
             info.user = (processData.get("user"));
-            info.virtualMemory = (processData.get("virtual_memory"));
+            info.kbVirtualMemory = (processData.get("virtual_memory"));
             info.priority = (processData.get("priority"));
 
             return info;

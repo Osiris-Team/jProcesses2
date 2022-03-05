@@ -15,10 +15,7 @@
  */
 package org.jutils.jprocesses.model;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Model that encapsulates process information
@@ -27,18 +24,21 @@ import java.util.Objects;
  */
 public class ProcessInfo {
 
-    public String pid;
-    public String time;
     public String name;
-    public String user;
-    public String virtualMemory;
-    public String physicalMemory;
+    public String caption;
+    public String pid;
+    public String time; // TODO Remove
+    public String user; // TODO remove
+    public String kbVirtualMemory;
+    public String kbWorkingSet;
     public String cpuUsage;
     public String startTime;
     public String priority;
     public String command;
+
+    public String parentPid;
     public ProcessInfo parentProcess;
-    public List<ProcessInfo> childProcesses;
+    public List<ProcessInfo> childProcesses = new ArrayList<>(1);
 
     //Used to store system specific data
     public Map<String, String> extraData = new HashMap<String, String>();
@@ -46,13 +46,13 @@ public class ProcessInfo {
     public ProcessInfo(){
     }
 
-    public ProcessInfo(String pid, String time, String name, String user, String virtualMemory, String physicalMemory, String cpuUsage, String startTime, String priority, String command) {
+    public ProcessInfo(String pid, String time, String name, String user, String kbVirtualMemory, String kbWorkingSet, String cpuUsage, String startTime, String priority, String command) {
         this.pid = pid;
         this.time = time;
         this.name = name;
         this.user = user;
-        this.virtualMemory = virtualMemory;
-        this.physicalMemory = physicalMemory;
+        this.kbVirtualMemory = kbVirtualMemory;
+        this.kbWorkingSet = kbWorkingSet;
         this.cpuUsage = cpuUsage;
         this.startTime = startTime;
         this.priority = priority;
@@ -98,7 +98,7 @@ public class ProcessInfo {
 
     @Override
     public String toString() {
-        return "PID:" + pid + "	CPU:" + cpuUsage + "	MEM:" + physicalMemory
+        return "PID:" + pid + "	CPU:" + cpuUsage + "	MEM:" + kbWorkingSet
                 + "	PRIORITY:" + priority + "	CMD:" + command;
     }
 }
