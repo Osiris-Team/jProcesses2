@@ -105,49 +105,6 @@ public class JProcesses {
     }
 
     /**
-     * Convenience  method that returns the list of processes
-     * that match with the provided name.<br>
-     * For each process some information is retrieved:
-     * <ul>
-     * <li>PID</li>
-     * <li>Name</li>
-     * <li>Used memory</li>
-     * <li>Date/time</li>
-     * <li>Priority</li>
-     * </ul>
-     * [...]<p>
-     * <p>
-     * For further details see {@link ProcessInfo}
-     *
-     * @return List of found processes
-     */
-    public List<ProcessInfo> getProcessList() {
-        return getService().getList();
-    }
-
-    /**
-     * Convenience  method that returns the list of processes
-     * that match with the provided name.<br>
-     * For each process some information is retrieved:
-     * <ul>
-     * <li>PID</li>
-     * <li>Name</li>
-     * <li>Used memory</li>
-     * <li>Date/time</li>
-     * <li>Priority</li>
-     * </ul>
-     * [...]<p>
-     * <p>
-     * For further details see {@link ProcessInfo}
-     *
-     * @param name The name of the searched process
-     * @return List of found processes
-     */
-    public List<ProcessInfo> getProcessList(String name) {
-        return getService().getList(name);
-    }
-
-    /**
      * method that returns the information of a process<br>
      * Some information is retrieved:
      * <ul>
@@ -194,17 +151,23 @@ public class JProcesses {
     }
 
     /**
-     * method that changes the priority of a process<br>
-     * If the process does not finish with this method, try with the stronger killProcess()<p>
-     * <p>
-     * For further details see {@link ProcessInfo}
-     *
      * @param pid         the PID of the process tochange priority
-     * @param newPriority integer with the new version. For windows you can use the helper constants at {@link WindowsPriority}
-     * @return {@link JProcessesResponse} response object that contains information about the result of the operation
+     * @param newPriority integer with the new version.
+     * @return {@link JProcessesResponse} response object that contains information about the result of the operation.
+     * If the process does not finish with this method, try with the stronger killProcess()
      */
     public JProcessesResponse changePriority(int pid, int newPriority) {
         return getService().changePriority(pid, newPriority);
+    }
+
+    /**
+     * @param pid         the PID of the process tochange priority
+     * @param newPriority integer with the new version.
+     * @return {@link JProcessesResponse} response object that contains information about the result of the operation.
+     * If the process does not finish with this method, try with the stronger killProcess()
+     */
+    public JProcessesResponse changePriority(int pid, WindowsPriority newPriority) {
+        return changePriority(pid, newPriority.value);
     }
 
     private ProcessesService getService() {
