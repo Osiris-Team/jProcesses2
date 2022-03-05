@@ -79,7 +79,7 @@ public class JProcesses {
      *
      * @return List of processes
      */
-    public List<ProcessInfo> listProcesses() {
+    public List<ProcessInfo> getProcesses() {
         return getService().getList(fastMode);
     }
 
@@ -100,7 +100,7 @@ public class JProcesses {
      * @param name The name of the searched process
      * @return List of found processes
      */
-    public List<ProcessInfo> listProcesses(String name) {
+    public List<ProcessInfo> getProcesses(String name) {
         return getService().getList(name, fastMode);
     }
 

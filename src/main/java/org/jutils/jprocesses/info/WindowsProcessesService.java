@@ -261,16 +261,16 @@ public class WindowsProcessesService extends AbstractProcessesService {
         for (final Map<String, String> process : allProcesses) {
             if (String.valueOf(pid).equals(process.get("pid"))) {
                 ProcessInfo info = new ProcessInfo();
-                info.setPid(process.get("pid"));
-                info.setName(process.get("proc_name"));
-                info.setTime(process.get("proc_time"));
-                info.setCommand(process.get("command"));
-                info.setCpuUsage(process.get("cpu_usage"));
-                info.setPhysicalMemory(process.get("physical_memory"));
-                info.setStartTime(process.get("start_time"));
-                info.setUser(process.get("user"));
-                info.setVirtualMemory(process.get("virtual_memory"));
-                info.setPriority(process.get("priority"));
+                info.pid = (process.get("pid"));
+                info.name = (process.get("proc_name"));
+                info.time = (process.get("proc_time"));
+                info.command = (process.get("command"));
+                info.cpuUsage = (process.get("cpu_usage"));
+                info.physicalMemory = (process.get("physical_memory"));
+                info.startTime = (process.get("start_time"));
+                info.user = (process.get("user"));
+                info.virtualMemory = (process.get("virtual_memory"));
+                info.priority = (process.get("priority"));
 
                 return info;
             }

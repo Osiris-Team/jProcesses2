@@ -146,16 +146,16 @@ public class UnixProcessesService extends AbstractProcessesService {
         if (processList != null && !processList.isEmpty()) {
             Map<String, String> processData = processList.get(0);
             ProcessInfo info = new ProcessInfo();
-            info.setPid(processData.get("pid"));
-            info.setName(processData.get("proc_name"));
-            info.setTime(processData.get("proc_time"));
-            info.setCommand(processData.get("command"));
-            info.setCpuUsage(processData.get("cpu_usage"));
-            info.setPhysicalMemory(processData.get("physical_memory"));
-            info.setStartTime(processData.get("start_time"));
-            info.setUser(processData.get("user"));
-            info.setVirtualMemory(processData.get("virtual_memory"));
-            info.setPriority(processData.get("priority"));
+            info.pid = (processData.get("pid"));
+            info.name = (processData.get("proc_name"));
+            info.time = (processData.get("proc_time"));
+            info.command = (processData.get("command"));
+            info.cpuUsage = (processData.get("cpu_usage"));
+            info.physicalMemory = (processData.get("physical_memory"));
+            info.startTime = (processData.get("start_time"));
+            info.user = (processData.get("user"));
+            info.virtualMemory = (processData.get("virtual_memory"));
+            info.priority = (processData.get("priority"));
 
             return info;
         }
