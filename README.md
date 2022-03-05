@@ -1,2 +1,2 @@
 # jProcesses2
-Fork of JProcesses with additional features.
+Fork of [JProcesses](https://github.com/profesorfalken/jProcesses) with additional features.
