@@ -3,27 +3,18 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jprocesses</groupId>
     <artifactId>jProcesses</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <sonar.java.source>1.7</sonar.java.source>
+        <java>1.7</java>
     </properties>
     
     <name>jProcesses</name>
     <description>Library to manage system processes using Java</description>
-    <url>https://github.com/profesorfalken/jProcesses</url>
+    <url>https://github.com/Osiris-Team/jProcesses2</url>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
     
     <developers>
         <developer>
@@ -32,22 +23,12 @@
             <organization>ProfesorFalken</organization>
             <organizationUrl>http://www.profesorfalken.com</organizationUrl>
         </developer>
+        <developer>
+            <name>Osiris-Team</name>
+            <organization>Osiris-Team</organization>
+        </developer>
     </developers>
-    
-    <scm>
-        <url>https://github.com/profesorfalken/jProcesses.git</url>
-    </scm>
-    
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+
 
     <dependencies>
         <dependency>
@@ -56,19 +37,7 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.profesorfalken</groupId>
-            <artifactId>WMI4Java</artifactId>
-            <version>1.6.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.8.4</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-
 
     <build>
         <finalName>${project.name}</finalName> <!-- If you'd like to have version information on your output jar, remove this. -->
@@ -87,8 +56,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>${java}</source>
+                    <target>${java}</target>
                 </configuration>
             </plugin>
 
