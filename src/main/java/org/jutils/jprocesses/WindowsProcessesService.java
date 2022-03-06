@@ -272,10 +272,10 @@ class WindowsProcessesService extends AbstractProcessesService {
                 info.time = (process.get("proc_time"));
                 info.command = (process.get("command"));
                 info.cpuUsage = (process.get("cpu_usage"));
-                info.kbWorkingSet = (process.get("physical_memory"));
-                info.startTime = (process.get("start_time"));
-                info.user = (process.get("user"));
-                info.kbVirtualMemory = (process.get("virtual_memory"));
+                info.usedMemoryInKB = (process.get("physical_memory"));
+                info.timestampStart = (process.get("start_time"));
+                info.username = (process.get("user"));
+                info.usedVirtualMemoryInKB = (process.get("virtual_memory"));
                 info.priority = (process.get("priority"));
                 info.parentPid = (process.get("parent_pid"));
 

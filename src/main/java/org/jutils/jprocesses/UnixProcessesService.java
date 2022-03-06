@@ -15,7 +15,6 @@
  */
 package org.jutils.jprocesses;
 
-import org.jutils.jprocesses.util.NativeResult;
 import org.jutils.jprocesses.util.OS;
 import org.jutils.jprocesses.util.NativeUtils;
 
@@ -104,33 +103,6 @@ class UnixProcessesService extends AbstractProcessesService {
                 "-e", "-o", PS_COLUMNS);
     }
 
-    @Override
-    protected NativeResult kill(int pid) {
-        NativeResult response = new NativeResult();
-        if (nativeUtils.executeCommandAndGetCode("kill", "-9", String.valueOf(pid)) == 0) {
-            response.setSuccess(true);
-        }
-        return response;
-    }
-
-    @Override
-    protected NativeResult killGracefully(int pid) {
-        NativeResult response = new NativeResult();
-        if (nativeUtils.executeCommandAndGetCode("kill", "-15", String.valueOf(pid)) == 0) {
-            response.setSuccess(true);
-        }
-        return response;
-    }
-
-    public NativeResult changePriority(int pid, int priority) {
-        NativeResult response = new NativeResult();
-        if (nativeUtils.executeCommandAndGetCode("renice", String.valueOf(priority),
-                "-p", String.valueOf(pid)) == 0) {
-            response.setSuccess(true);
-        }
-        return response;
-    }
-
     public JProcess getProcess(int pid) {
         return getProcess(pid, false);
     }
@@ -149,10 +121,10 @@ class UnixProcessesService extends AbstractProcessesService {
             info.time = (processData.get("proc_time"));
             info.command = (processData.get("command"));
             info.cpuUsage = (processData.get("cpu_usage"));
-            info.kbWorkingSet = (processData.get("physical_memory"));
-            info.startTime = (processData.get("start_time"));
-            info.user = (processData.get("user"));
-            info.kbVirtualMemory = (processData.get("virtual_memory"));
+            info.usedMemoryInKB = (processData.get("physical_memory"));
+            info.timestampStart = (processData.get("start_time"));
+            info.username = (processData.get("user"));
+            info.usedVirtualMemoryInKB = (processData.get("virtual_memory"));
             info.priority = (processData.get("priority"));
 
             return info;

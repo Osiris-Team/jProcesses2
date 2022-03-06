@@ -22,25 +22,51 @@ import org.jutils.jprocesses.util.OS;
 import java.util.*;
 
 /**
- * Model that encapsulates process information
+ * Holds raw process information,
+ * and provides various methods to work with its data,
+ * or change its state.
  *
  * @author Javier Garcia Alonso
+ * @author Osiris-Team
  */
 public class JProcess {
-
+    /**
+     * The name by which this process is known.
+     */
     public String name;
+    /**
+     * Similar (or even the same as) to {@link #name}, but in most cases shorter.
+     */
     public String caption;
+    /**
+     * The process identifier.
+     */
     public String pid;
-    public String time; // TODO Remove
-    public String user;
-    public String kbVirtualMemory;
-    public String kbWorkingSet;
+    /**
+     * The name of the user running this process.
+     */
+    public String username;
+    /**
+     * The virtual memory used by this process in kilobytes.
+     */
+    public String usedVirtualMemoryInKB;
+    /**
+     * The total amount of memory used by this process, in kilobytes. <br>
+     * Also known under the processes' working set.
+     */
+    public String usedMemoryInKB;
+    /**
+     * The CPU usage of this process. <br>
+     * A value between 0.0 (0%) and 100.0 (100%).<br>
+     * TODO find a way of making this available for Windows too, without taking ages!
+     */
     public String cpuUsage;
     /**
-     * The creation date of this process. <br>
-     * // TODO find out the Windows/Unix formats for this. <br>
+     * The timestamp of when this process was created. <br>
+     * Note that this is a raw and system-dependent value, <br>
+     * thus it's recommended to use {@link #getTimestampStart()} instead. <br>
      */
-    public String startTime;
+    public String timestampStart;
     /**
      * The priority of this process. <br>
      * Note that this is a raw and system-dependent value, <br>
@@ -51,7 +77,9 @@ public class JProcess {
      * The complete command that was used to start this process.
      */
     public String command;
-
+    /**
+     * The process identifier of the process that created this process.
+     */
     public String parentPid;
     public JProcess parentProcess;
     public List<JProcess> childProcesses = new ArrayList<>(1);
@@ -62,39 +90,17 @@ public class JProcess {
     public JProcess(){
     }
 
-    public JProcess(String pid, String time, String name, String user, String kbVirtualMemory, String kbWorkingSet, String cpuUsage, String startTime, String priority, String command) {
+    public JProcess(String pid, String time, String name, String username, String usedVirtualMemoryInKB, String usedMemoryInKB, String cpuUsage, String timestampStart, String priority, String command) {
         this.pid = pid;
         this.time = time;
         this.name = name;
-        this.user = user;
-        this.kbVirtualMemory = kbVirtualMemory;
-        this.kbWorkingSet = kbWorkingSet;
+        this.username = username;
+        this.usedVirtualMemoryInKB = usedVirtualMemoryInKB;
+        this.usedMemoryInKB = usedMemoryInKB;
         this.cpuUsage = cpuUsage;
-        this.startTime = startTime;
+        this.timestampStart = timestampStart;
         this.priority = priority;
         this.command = command;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        JProcess that = (JProcess) o;
-
-        if (!Objects.equals(pid, that.pid)) return false;
-        if (!Objects.equals(time, that.time)) return false;
-        if (!Objects.equals(name, that.name)) return false;
-//        if (user != null ? !user.equals(that.user) : that.user != null) return false;
-//        if (virtualMemory != null ? !virtualMemory.equals(that.virtualMemory) : that.virtualMemory != null)
-//            return false;
-//        if (physicalMemory != null ? !physicalMemory.equals(that.physicalMemory) : that.physicalMemory != null)
-//            return false;
-//        if (cpuUsage != null ? !cpuUsage.equals(that.cpuUsage) : that.cpuUsage != null) return false;
-        if (!Objects.equals(startTime, that.startTime)) return false;
-        if (!Objects.equals(priority, that.priority)) return false;
-        return Objects.equals(command, that.command);
-
     }
 
     public NativeResult stop(){
@@ -167,23 +173,16 @@ public class JProcess {
         return null;
     }
 
-    @Override
-    public int hashCode() {
-        int result = pid != null ? pid.hashCode() : 0;
-        result = 31 * result + (time != null ? time.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-//        result = 31 * result + (user != null ? user.hashCode() : 0)   //TODO: return this to equals and hashcode after getProcessesOwner refactoring
-//        result = 31 * result + (virtualMemory != null ? virtualMemory.hashCode() : 0);
-//        result = 31 * result + (physicalMemory != null ? physicalMemory.hashCode() : 0);
-//        result = 31 * result + (cpuUsage != null ? cpuUsage.hashCode() : 0);
-        result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
-        result = 31 * result + (priority != null ? priority.hashCode() : 0);
-        result = 31 * result + (command != null ? command.hashCode() : 0);
-        return result;
+    public Date getTimestampStart(){
+        // TODO
+        return null;
     }
 
     public String toPrintString() {
-        return "NAME:" +name+ " PID:" + pid + " CPU:" + cpuUsage + " MEM:" + kbWorkingSet
+        return "NAME:" +name+ " PID:" + pid + " CPU:" + cpuUsage + " MEM:" + usedMemoryInKB
                 + "	PRIORITY:" + priority + " CMD:" + command;
+    }
+    public String toMinimalPrintString() {
+        return "NAME:" +name+ " PID:" + pid;
     }
 }

@@ -77,10 +77,10 @@ abstract class AbstractProcessesService implements ProcessesService {
             info.time = (map.get("proc_time"));
             info.command = ((map.get("command") != null) ? map.get("command") : "");
             info.cpuUsage = (map.get("cpu_usage"));
-            info.kbWorkingSet = (map.get("physical_memory"));
-            info.startTime = (map.get("start_time"));
-            info.user = (map.get("user"));
-            info.kbVirtualMemory = (map.get("virtual_memory"));
+            info.usedMemoryInKB = (map.get("physical_memory"));
+            info.timestampStart = (map.get("start_time"));
+            info.username = (map.get("user"));
+            info.usedVirtualMemoryInKB = (map.get("virtual_memory"));
             info.priority = (map.get("priority"));
 
             //Adds extra data

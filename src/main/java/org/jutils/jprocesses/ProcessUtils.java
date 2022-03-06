@@ -39,14 +39,24 @@ public class ProcessUtils {
     }
 
     /**
-     * Fetches the currently running processes.
+     * Fetches all the currently running processes.
      */
     public List<JProcess> getProcesses() throws IOException, InterruptedException {
         if(OS.isWindows) return fetchWindowsProcesses();
         else return fetchUnixProcesses();
     }
 
-    private List<JProcess> fetchUnixProcesses() {
+    private List<JProcess> fetchUnixProcesses() throws IOException {
+        // ps -e -o pid,ruser,vsize,rss,%cpu,lstart,cputime,nice,ucomm,command
+        // The first returned line contains enables us to determine the column widths
+        Process process = new ProcessBuilder().command("ps", "-ww", "-e", "-o", "pid,ruser,vsize,rss,%cpu,lstart,cputime,nice,ucomm,command").start();
+        List<JProcess> list = new ArrayList<>(50);
+        String line = "";
+        JProcess p = new JProcess();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            while((line = br.readLine()) != null){
+            }
+        }
         return null; // TODO
     }
 
@@ -92,7 +102,7 @@ public class ProcessUtils {
                     }
                     countRead++;
                 } else if(line.startsWith("UserModeTime")) {
-                    p.user = line.substring(line.indexOf("=")+1);
+                    p.username = line.substring(line.indexOf("=")+1);
                     if(countRead == 10) {
                         list.add(p);
                         p = new JProcess();
@@ -108,7 +118,7 @@ public class ProcessUtils {
                     }
                     countRead++;
                 } else if(line.startsWith("VirtualSize")) {
-                    p.kbVirtualMemory = line.substring(line.indexOf("=")+1);
+                    p.usedVirtualMemoryInKB = line.substring(line.indexOf("=")+1);
                     if(countRead == 10) {
                         list.add(p);
                         p = new JProcess();
@@ -116,7 +126,7 @@ public class ProcessUtils {
                     }
                     countRead++;
                 } else if(line.startsWith("WorkingSetSize")) {
-                    p.kbWorkingSet = line.substring(line.indexOf("=")+1);
+                    p.usedMemoryInKB = line.substring(line.indexOf("=")+1);
                     if(countRead == 10) {
                         list.add(p);
                         p = new JProcess();
@@ -132,7 +142,7 @@ public class ProcessUtils {
                     }
                     countRead++;
                 } else if(line.startsWith("CreationDate")) {
-                    p.startTime = line.substring(line.indexOf("=")+1);
+                    p.timestampStart = line.substring(line.indexOf("=")+1);
                     if(countRead == 10) {
                         list.add(p);
                         p = new JProcess();

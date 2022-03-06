@@ -53,11 +53,11 @@ public class JProcessesTest {
             System.out.println("Process PID: " + JProcess.pid);
             System.out.println("Process Name: " + JProcess.name);
             System.out.println("Process Time: " + JProcess.time);
-            System.out.println("User: " + JProcess.user);
-            System.out.println("Virtual Memory: " + JProcess.kbVirtualMemory);
-            System.out.println("Physical Memory: " + JProcess.kbWorkingSet);
+            System.out.println("User: " + JProcess.username);
+            System.out.println("Virtual Memory: " + JProcess.usedVirtualMemoryInKB);
+            System.out.println("Physical Memory: " + JProcess.usedMemoryInKB);
             System.out.println("CPU usage: " + JProcess.cpuUsage);
-            System.out.println("Start Time: " + JProcess.startTime);
+            System.out.println("Start Time: " + JProcess.timestampStart);
             System.out.println("Start DateTime: "
                     + JProcess.extraData.get("start_datetime"));
             System.out.println("Priority: " + JProcess.priority);
@@ -87,11 +87,11 @@ public class JProcessesTest {
             System.out.println("Process PID: " + JProcess.pid);
             System.out.println("Process Name: " + JProcess.name);
             System.out.println("Process Time: " + JProcess.time);
-            System.out.println("User: " + JProcess.user);
-            System.out.println("Virtual Memory: " + JProcess.kbVirtualMemory);
-            System.out.println("Physical Memory: " + JProcess.kbWorkingSet);
+            System.out.println("User: " + JProcess.username);
+            System.out.println("Virtual Memory: " + JProcess.usedVirtualMemoryInKB);
+            System.out.println("Physical Memory: " + JProcess.usedMemoryInKB);
             System.out.println("CPU usage: " + JProcess.cpuUsage);
-            System.out.println("Start Time: " + JProcess.startTime);
+            System.out.println("Start Time: " + JProcess.timestampStart);
             System.out.println("Priority: " + JProcess.priority);
             System.out.println("Command: " + JProcess.command);
             System.out.println("------------------");
