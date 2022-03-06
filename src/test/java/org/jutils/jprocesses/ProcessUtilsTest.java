@@ -1,14 +1,11 @@
 package org.jutils.jprocesses;
 
 import org.junit.*;
-import org.jutils.jprocesses.util.OS;
 
 import java.io.IOException;
-
-import static org.junit.Assert.assertTrue;
+import java.text.ParseException;
 
 /**
- *
  * @author javier
  */
 public class ProcessUtilsTest {
@@ -34,10 +31,12 @@ public class ProcessUtilsTest {
     }
 
     @Test
-    public void testParentChildStuff() throws IOException, InterruptedException {
+    public void generalTest() throws IOException, InterruptedException {
         System.out.println(jp2.getThisProcess().toPrintString());
     }
 
+    @Test
+    public void aaaa() throws IOException, ParseException, InterruptedException {
 
-
+    }
 }

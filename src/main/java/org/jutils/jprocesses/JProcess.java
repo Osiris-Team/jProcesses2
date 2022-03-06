@@ -19,6 +19,7 @@ import org.jutils.jprocesses.util.NativeResult;
 import org.jutils.jprocesses.util.NativeUtils;
 import org.jutils.jprocesses.util.OS;
 
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -58,7 +59,7 @@ public class JProcess {
     /**
      * The CPU usage of this process. <br>
      * A value between 0.0 (0%) and 100.0 (100%).<br>
-     * TODO find a way of making this available for Windows too, without taking ages!
+     * Note that this is currently not supported for Windows. TODO find a way of making this available for Windows.
      */
     public String cpuUsage;
     /**
@@ -87,12 +88,11 @@ public class JProcess {
     //Used to store system specific data
     public Map<String, String> extraData = new HashMap<String, String>();
 
-    public JProcess(){
+    public JProcess() {
     }
 
     public JProcess(String pid, String time, String name, String username, String usedVirtualMemoryInKB, String usedMemoryInKB, String cpuUsage, String timestampStart, String priority, String command) {
         this.pid = pid;
-        this.time = time;
         this.name = name;
         this.username = username;
         this.usedVirtualMemoryInKB = usedVirtualMemoryInKB;
@@ -103,14 +103,14 @@ public class JProcess {
         this.command = command;
     }
 
-    public NativeResult stop(){
+    public NativeResult stop() {
         NativeUtils nativeUtils = new NativeUtils();
         NativeResult response = new NativeResult();
-        if(OS.isWindows){
+        if (OS.isWindows) {
             if (nativeUtils.executeCommandAndGetCode("taskkill", "/PID", String.valueOf(pid)) == 0) {
                 response.setSuccess(true);
             }
-        } else{
+        } else {
             if (nativeUtils.executeCommandAndGetCode("kill", "-15", String.valueOf(pid)) == 0) {
                 response.setSuccess(true);
             }
@@ -118,14 +118,14 @@ public class JProcess {
         return response;
     }
 
-    public NativeResult kill(){
+    public NativeResult kill() {
         NativeUtils nativeUtils = new NativeUtils();
         NativeResult response = new NativeResult();
-        if(OS.isWindows){
+        if (OS.isWindows) {
             if (nativeUtils.executeCommandAndGetCode("taskkill", "/PID", String.valueOf(pid), "/F") == 0) {
                 response.setSuccess(true);
             }
-        } else{
+        } else {
             if (nativeUtils.executeCommandAndGetCode("kill", "-9", String.valueOf(pid)) == 0) {
                 response.setSuccess(true);
             }
@@ -133,56 +133,90 @@ public class JProcess {
         return response;
     }
 
-    public NativeResult changePriority(JProcessPriority priority){
-        if(OS.isWindows)
+    public NativeResult changePriority(JProcessPriority priority) {
+        if (OS.isWindows)
             return changePriority(priority.windowsPriority);
         else
             return changePriority(priority.unixPriority);
     }
 
-    public NativeResult changePriority(int priority){
-        if(OS.isWindows){
+    public NativeResult changePriority(int priority) {
+        if (OS.isWindows) {
             VBScriptHelper vbScriptHelper = new VBScriptHelper();
             NativeResult response = new NativeResult();
             String message = vbScriptHelper.changePriority(Integer.parseInt(pid), priority);
             if (message == null || message.length() == 0) {
                 response.setSuccess(true);
-                this.priority = ""+priority;
+                this.priority = "" + priority;
             } else {
                 response.setMessage(message);
             }
             return response;
-        } else{
+        } else {
             NativeUtils nativeUtils = new NativeUtils();
             NativeResult result = new NativeResult();
-            if (nativeUtils.executeCommandAndGetCode("renice", ""+priority,
+            if (nativeUtils.executeCommandAndGetCode("renice", "" + priority,
                     "-p", pid) == 0) {
                 result.setSuccess(true);
-                this.priority = ""+priority;
+                this.priority = "" + priority;
             }
             return result;
         }
     }
 
-    public JProcessPriority getPriority(){
-        if (OS.isWindows){
-            //TODO
-        } else{
-            //TODO
+    public JProcessPriority getPriority() {
+        int prio = Integer.parseInt(priority);
+        if (OS.isWindows) {
+            switch (prio) {
+                case 64:
+                    return JProcessPriority.IDLE;
+                case 16384:
+                    return JProcessPriority.BELOW_NORMAL;
+                case 32:
+                    return JProcessPriority.NORMAL;
+                case 32768:
+                    return JProcessPriority.ABOVE_NORMAL;
+                case 128:
+                    return JProcessPriority.HIGH;
+                case 258:
+                    return JProcessPriority.REAL_TIME;
+                default:
+                    return JProcessPriority.NORMAL;
+            }
+        } else {
+            switch (prio) {
+                case 19:
+                    return JProcessPriority.IDLE;
+                case 10:
+                    return JProcessPriority.BELOW_NORMAL;
+                case 0:
+                    return JProcessPriority.NORMAL;
+                case -5:
+                    return JProcessPriority.ABOVE_NORMAL;
+                case -10:
+                    return JProcessPriority.HIGH;
+                case -20:
+                    return JProcessPriority.REAL_TIME;
+                default:
+                    return JProcessPriority.NORMAL;
+            }
         }
-        return null;
     }
 
-    public Date getTimestampStart(){
-        // TODO
-        return null;
+    public Date getTimestampStart() throws ParseException {
+        NativeUtils nativeUtils = new NativeUtils();
+        if (OS.isWindows)
+            return nativeUtils.parseWindowsDateTimeToFullDate(timestampStart);
+        else
+            return nativeUtils.parseUnixLongTimeToFullDate(timestampStart);
     }
 
     public String toPrintString() {
-        return "NAME:" +name+ " PID:" + pid + " CPU:" + cpuUsage + " MEM:" + usedMemoryInKB
+        return "NAME:" + name + " PID:" + pid + " CPU:" + cpuUsage + " MEM:" + usedMemoryInKB
                 + "	PRIORITY:" + priority + " CMD:" + command;
     }
+
     public String toMinimalPrintString() {
-        return "NAME:" +name+ " PID:" + pid;
+        return "NAME:" + name + " PID:" + pid;
     }
 }

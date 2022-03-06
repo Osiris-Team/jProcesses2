@@ -16,12 +16,12 @@
 package org.jutils.jprocesses;
 
 public enum JProcessPriority {
-    IDLE(64, 0),
-    BELOW_NORMAL(16384, 0),
+    IDLE(64, 19),
+    BELOW_NORMAL(16384, 10),
     NORMAL(32, 0),
-    ABOVE_NORMAL(32768, 0),
-    HIGH(128, 0),
-    REAL_TIME(258, 0);
+    ABOVE_NORMAL(32768, -5),
+    HIGH(128, -10),
+    REAL_TIME(258, -20);
 
     public int windowsPriority = 0;
     public int unixPriority = 0; // TODO FIND OUT

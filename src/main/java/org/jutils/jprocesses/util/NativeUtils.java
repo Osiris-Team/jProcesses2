@@ -21,10 +21,7 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -130,7 +127,7 @@ public class NativeUtils {
      * @see <a href="https://msdn.microsoft.com/fr-fr/library/windows/desktop/aa387237(v=vs.85).aspx">
      * https://msdn.microsoft.com/fr-fr/library/windows/desktop/aa387237(v=vs.85).aspx</a>
      */
-    public String parseWindowsDateTimeToFullDate(String dateTime) {
+    public Date parseWindowsDateTimeToFullDate(String dateTime) throws ParseException {
         String returnedDate = dateTime;
         if (dateTime != null && !dateTime.isEmpty()) {
             String year = dateTime.substring(0, 4);
@@ -143,7 +140,9 @@ public class NativeUtils {
             returnedDate = month + "/" + day + "/" + year + " " + hour + ":"
                     + minutes + ":" + seconds;
         }
-        return returnedDate;
+        DateFormat targetFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        return targetFormat.parse(returnedDate);
+        //return returnedDate;
     }
 
     /**
@@ -153,12 +152,13 @@ public class NativeUtils {
      * @param longFormatDate original datetime format
      * @return string with formatted date and time (mm/dd/yyyy HH:mm:ss)
      */
-    public String parseUnixLongTimeToFullDate(String longFormatDate) throws ParseException {
+    public Date parseUnixLongTimeToFullDate(String longFormatDate) throws ParseException {
         DateFormat targetFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         List<String> formatsToTry = new ArrayList<String>();
         formatsToTry.addAll(Arrays.asList("MMM dd HH:mm:ss yyyy", "dd MMM HH:mm:ss yyyy"));
         List<Locale> localesToTry = new ArrayList<Locale>();
-        localesToTry.addAll(Arrays.asList(Locale.getDefault(),
+        localesToTry.addAll(Arrays.asList(
+                Locale.getDefault(),
                 Locale.getDefault(Locale.Category.FORMAT),
                 Locale.ENGLISH)
         );
@@ -174,7 +174,8 @@ public class NativeUtils {
             for (String format : formatsToTry) {
                 DateFormat originalFormat = new SimpleDateFormat(format, locale);
                 try {
-                    return targetFormat.format(originalFormat.parse(longFormatDate));
+                    return originalFormat.parse(longFormatDate);
+                    //return targetFormat.format(originalFormat.parse(longFormatDate));
                 } catch (ParseException ex) {
                     lastException = ex;
                 }

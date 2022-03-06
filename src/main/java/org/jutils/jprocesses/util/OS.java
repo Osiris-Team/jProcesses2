@@ -18,7 +18,7 @@ package org.jutils.jprocesses.util;
 public class OS {
     public static boolean isWindows, isUnix, isMac, isLinux, isSolaris;
 
-    static{
+    static {
         String name = System.getProperty("os.name").toLowerCase();
         isWindows = name.contains("win");
         isUnix = name.contains("nix") || name.contains("nux") || name.contains("aix") || name.matches("mac.*os.*x");
