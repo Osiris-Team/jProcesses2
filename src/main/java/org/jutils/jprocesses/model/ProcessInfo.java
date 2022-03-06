@@ -32,8 +32,20 @@ public class ProcessInfo {
     public String kbVirtualMemory;
     public String kbWorkingSet;
     public String cpuUsage;
+    /**
+     * The creation date of this process. <br>
+     * // TODO find out the Windows/Unix formats for this. <br>
+     */
     public String startTime;
+    /**
+     * The priority of this process as int. <br>
+     * Note that Windows and Unix priorities are different. <br>
+     * For Windows see the {@link WindowsPriority} enum, for Unix value range from //TODO find this out. <br>
+     */
     public String priority;
+    /**
+     * The complete command that was used to start this process.
+     */
     public String command;
 
     public String parentPid;
@@ -96,9 +108,8 @@ public class ProcessInfo {
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "PID:" + pid + "	CPU:" + cpuUsage + "	MEM:" + kbWorkingSet
-                + "	PRIORITY:" + priority + "	CMD:" + command;
+    public String toPrintString() {
+        return "NAME:" +name+ " PID:" + pid + " CPU:" + cpuUsage + " MEM:" + kbWorkingSet
+                + "	PRIORITY:" + priority + " CMD:" + command;
     }
 }

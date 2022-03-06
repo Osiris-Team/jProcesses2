@@ -42,29 +42,30 @@ public class WindowsProcessesService extends AbstractProcessesService {
     private final String LINE_BREAK_REGEX = "\\r?\\n";
 
     private final Map<String, String> keyMap;
-    private final String NAME_PROPNAME = "Name";
-    private final String PROCESSID_PROPNAME = "ProcessId";
-    private final String USERMODETIME_PROPNAME = "UserModeTime";
-    private final String PRIORITY_PROPNAME = "Priority";
-    private final String VIRTUALSIZE_PROPNAME = "VirtualSize";
-    private final String WORKINGSETSIZE_PROPNAME = "WorkingSetSize";
-    private final String COMMANDLINE_PROPNAME = "CommandLine";
-    private final String CREATIONDATE_PROPNAME = "CreationDate";
+    private final String NAME = "Name";
+    private final String PID = "ProcessId";
+    private final String USERMODETIME = "UserModeTime";
+    private final String PRIORITY = "Priority";
+    private final String VIRTUALSIZE = "VirtualSize";
+    private final String WORKINGSETSIZE = "WorkingSetSize";
+    private final String COMMANDLINE = "CommandLine";
+    private final String CREATIONDATE = "CreationDate";
     private final String CAPTION_PROPNAME = "Caption";
-    private final String PARENT_PID_PROPNAME = "ParentProcessId";
+    private final String PARENT_PID = "ParentProcessId";
     private final WMI4Java wmi4Java;
     private Map<String, String> processMap;
 
     {
         Map<String, String> tmpMap = new HashMap<String, String>();
-        tmpMap.put(NAME_PROPNAME, "proc_name");
-        tmpMap.put(PROCESSID_PROPNAME, "pid");
-        tmpMap.put(USERMODETIME_PROPNAME, "proc_time");
-        tmpMap.put(PRIORITY_PROPNAME, "priority");
-        tmpMap.put(VIRTUALSIZE_PROPNAME, "virtual_memory");
-        tmpMap.put(WORKINGSETSIZE_PROPNAME, "physical_memory");
-        tmpMap.put(COMMANDLINE_PROPNAME, "command");
-        tmpMap.put(CREATIONDATE_PROPNAME, "start_time");
+        tmpMap.put(NAME, "proc_name");
+        tmpMap.put(PID, "pid");
+        tmpMap.put(USERMODETIME, "proc_time");
+        tmpMap.put(PRIORITY, "priority");
+        tmpMap.put(VIRTUALSIZE, "virtual_memory");
+        tmpMap.put(WORKINGSETSIZE, "physical_memory");
+        tmpMap.put(COMMANDLINE, "command");
+        tmpMap.put(CREATIONDATE, "start_time");
+        tmpMap.put(PARENT_PID, "parent_pid");
 
         keyMap = Collections.unmodifiableMap(tmpMap);
     }
@@ -110,12 +111,12 @@ public class WindowsProcessesService extends AbstractProcessesService {
             processMap.put(normalizeKey(dataStringInfo[0].trim()),
                     normalizeValue(dataStringInfo[0].trim(), dataStringInfo[1].trim()));
 
-            if (PROCESSID_PROPNAME.equals(dataStringInfo[0].trim())) {
+            if (PID.equals(dataStringInfo[0].trim())) {
                 processMap.put("user", userData.get(dataStringInfo[1].trim()));
                 processMap.put("cpu_usage", cpuData.get(dataStringInfo[1].trim()));
             }
 
-            if (CREATIONDATE_PROPNAME.equals(dataStringInfo[0].trim())) {
+            if (CREATIONDATE.equals(dataStringInfo[0].trim())) {
                 processMap.put("start_datetime",
                         processesUtils.parseWindowsDateTimeToFullDate(dataStringInfo[1].trim()));
             }
@@ -130,15 +131,20 @@ public class WindowsProcessesService extends AbstractProcessesService {
 
         if (name != null) {
             return getWmi4Java().VBSEngine()
-                    .properties(Arrays.asList(CAPTION_PROPNAME, PROCESSID_PROPNAME, NAME_PROPNAME,
-                            USERMODETIME_PROPNAME, COMMANDLINE_PROPNAME,
-                            WORKINGSETSIZE_PROPNAME, CREATIONDATE_PROPNAME,
-                            VIRTUALSIZE_PROPNAME, PRIORITY_PROPNAME, PARENT_PID_PROPNAME))
+                    .properties(Arrays.asList(CAPTION_PROPNAME, PID, NAME,
+                            USERMODETIME, COMMANDLINE,
+                            WORKINGSETSIZE, CREATIONDATE,
+                            VIRTUALSIZE, PRIORITY, PARENT_PID))
                     .filters(Collections.singletonList("Name like '%" + name + "%'"))
                     .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
+        } else{
+            return getWmi4Java().VBSEngine()
+                    .properties(Arrays.asList(CAPTION_PROPNAME, PID, NAME,
+                            USERMODETIME, COMMANDLINE,
+                            WORKINGSETSIZE, CREATIONDATE,
+                            VIRTUALSIZE, PRIORITY, PARENT_PID))
+                    .getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
         }
-
-        return getWmi4Java().VBSEngine().getRawWMIObjectOutput(WMIClass.WIN32_PROCESS);
     }
 
     @Override
@@ -166,17 +172,17 @@ public class WindowsProcessesService extends AbstractProcessesService {
     }
 
     private String normalizeValue(String origKey, String origValue) {
-        if (USERMODETIME_PROPNAME.equals(origKey)) {
+        if (USERMODETIME.equals(origKey)) {
             //100 nano to second - https://msdn.microsoft.com/en-us/library/windows/desktop/aa394372(v=vs.85).aspx
             long seconds = Long.parseLong(origValue) * 100 / 1000000 / 1000;
             return nomalizeTime(seconds);
         }
-        if (VIRTUALSIZE_PROPNAME.equals(origKey) || WORKINGSETSIZE_PROPNAME.equals(origKey)) {
+        if (VIRTUALSIZE.equals(origKey) || WORKINGSETSIZE.equals(origKey)) {
             if (!(origValue.isEmpty())) {
                 return String.valueOf(Long.parseLong(origValue) / 1024);
             }
         }
-        if (CREATIONDATE_PROPNAME.equals(origKey)) {
+        if (CREATIONDATE.equals(origKey)) {
             return processesUtils.parseWindowsDateTimeToSimpleTime(origValue);
         }
 
@@ -272,6 +278,7 @@ public class WindowsProcessesService extends AbstractProcessesService {
                 info.user = (process.get("user"));
                 info.kbVirtualMemory = (process.get("virtual_memory"));
                 info.priority = (process.get("priority"));
+                info.parentPid = (process.get("parent_pid"));
 
                 return info;
             }

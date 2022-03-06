@@ -16,7 +16,7 @@
 package org.jutils.jprocesses.model;
 
 /**
- * Helper constants class to set different priority levels in Windows
+ * Helper class to set different priority levels in Windows.
  *
  * @author Javier Garcia Alonso
  */
