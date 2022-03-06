@@ -1,6 +1,6 @@
 # jProcesses2 [![](https://jitpack.io/v/Osiris-Team/jProcesses2.svg)](https://jitpack.io/#Osiris-Team/jProcesses2)
 Fork of [JProcesses](https://github.com/profesorfalken/jProcesses) with additional features and enhancements.
-Add this as dependency to your project via [Maven/Gradle/Sbt/Leinigen](https://jitpack.io/#Osiris-Team/jProcesses2/LATEST).
+Add this as dependency to your project via [Maven/Gradle/Sbt/Leinigen](https://jitpack.io/#Osiris-Team/jProcesses2/LATEST) (requires Java 7 or higher).
 ```java
 class Example{
     public static void main(String[] args) {
