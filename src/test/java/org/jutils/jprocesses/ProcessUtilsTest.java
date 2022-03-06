@@ -1,17 +1,9 @@
 package org.jutils.jprocesses;
 
 import org.junit.*;
-import org.jutils.jprocesses.model.ProcessInfo;
-import org.jutils.jprocesses.util.OSDetector;
+import org.jutils.jprocesses.util.OS;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
@@ -19,11 +11,10 @@ import static org.junit.Assert.assertTrue;
  *
  * @author javier
  */
-public class JProcesses2Test {
-    JProcesses2 jp2 = new JProcesses2();
-    private OSDetector os = new OSDetector();
+public class ProcessUtilsTest {
+    ProcessUtils jp2 = new ProcessUtils();
 
-    public JProcesses2Test() {
+    public ProcessUtilsTest() {
     }
 
     @BeforeClass

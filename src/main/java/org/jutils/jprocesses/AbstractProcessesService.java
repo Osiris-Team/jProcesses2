@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jutils.jprocesses.info;
+package org.jutils.jprocesses;
 
-import org.jutils.jprocesses.model.JProcessesResponse;
-import org.jutils.jprocesses.model.ProcessInfo;
+import org.jutils.jprocesses.util.NativeResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +30,19 @@ abstract class AbstractProcessesService implements ProcessesService {
 
     protected boolean fastMode = false;
 
-    public List<ProcessInfo> getList() {
+    public List<JProcess> getList() {
         return getList(null);
     }
 
-    public List<ProcessInfo> getList(boolean fastMode) {
+    public List<JProcess> getList(boolean fastMode) {
         return getList(null, fastMode);
     }
 
-    public List<ProcessInfo> getList(String name) {
+    public List<JProcess> getList(String name) {
         return getList(name, false);
     }
 
-    public List<ProcessInfo> getList(String name, boolean fastMode) {
+    public List<JProcess> getList(String name, boolean fastMode) {
         this.fastMode = fastMode;
         String rawData = getProcessesData(name);
 
@@ -52,11 +51,11 @@ abstract class AbstractProcessesService implements ProcessesService {
         return buildInfoFromMap(mapList);
     }
 
-    public JProcessesResponse killProcess(int pid) {
+    public NativeResult killProcess(int pid) {
         return kill(pid);
     }
 
-    public JProcessesResponse killProcessGracefully(int pid) {
+    public NativeResult killProcessGracefully(int pid) {
         return killGracefully(pid);
     }
 
@@ -64,15 +63,15 @@ abstract class AbstractProcessesService implements ProcessesService {
 
     protected abstract String getProcessesData(String name);
 
-    protected abstract JProcessesResponse kill(int pid);
+    protected abstract NativeResult kill(int pid);
 
-    protected abstract JProcessesResponse killGracefully(int pid);
+    protected abstract NativeResult killGracefully(int pid);
 
-    private List<ProcessInfo> buildInfoFromMap(List<Map<String, String>> mapList) {
-        List<ProcessInfo> infoList = new ArrayList<ProcessInfo>();
+    private List<JProcess> buildInfoFromMap(List<Map<String, String>> mapList) {
+        List<JProcess> infoList = new ArrayList<JProcess>();
 
         for (final Map<String, String> map : mapList) {
-            ProcessInfo info = new ProcessInfo();
+            JProcess info = new JProcess();
             info.pid = (map.get("pid"));
             info.name = (map.get("proc_name"));
             info.time = (map.get("proc_time"));

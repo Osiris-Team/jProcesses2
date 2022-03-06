@@ -15,32 +15,15 @@
  */
 package org.jutils.jprocesses.util;
 
-/**
- * Detects used OS
- *
- * @author Javier Garcia Alonso
- */
-public class OSDetector {
+public class OS {
+    public static boolean isWindows, isUnix, isMac, isLinux, isSolaris;
 
-    private final String OS = System.getProperty("os.name").toLowerCase();
-
-    public boolean isWindows() {
-        return OS.contains("win");
-    }
-
-    public boolean isMac() {
-        return OS.contains("mac");
-    }
-
-    public boolean isUnix() {
-        return OS.contains("nix") || OS.contains("nux") || OS.contains("aix") || OS.matches("mac.*os.*x");
-    }
-
-    public boolean isLinux() {
-        return OS.contains("linux");
-    }
-
-    public boolean isSolaris() {
-        return OS.contains("sunos");
+    static{
+        String name = System.getProperty("os.name").toLowerCase();
+        isWindows = name.contains("win");
+        isUnix = name.contains("nix") || name.contains("nux") || name.contains("aix") || name.matches("mac.*os.*x");
+        isMac = name.contains("mac");
+        isLinux = name.contains("linux");
+        isSolaris = name.contains("sunos");
     }
 }

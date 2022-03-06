@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * @author Javier Garcia Alonso
  */
 @SuppressWarnings("Since15")
-public class ProcessesUtils {
+public class NativeUtils {
 
     private final String CRLF = "\r\n";
     private String customDateFormat;
@@ -50,7 +50,7 @@ public class ProcessesUtils {
             commandOutput = readData(processBuilder.start());
         } catch (IOException ex) {
             commandOutput = "";
-            Logger.getLogger(ProcessesUtils.class.getName()).log(Level.SEVERE, "Error executing command", ex);
+            Logger.getLogger(NativeUtils.class.getName()).log(Level.SEVERE, "Error executing command", ex);
             ex.printStackTrace();
         }
 
@@ -71,14 +71,14 @@ public class ProcessesUtils {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(ProcessesUtils.class.getName()).log(Level.SEVERE, "Error reading data", ex);
+            Logger.getLogger(NativeUtils.class.getName()).log(Level.SEVERE, "Error reading data", ex);
         } finally {
             try {
                 if (processOutput != null) {
                     processOutput.close();
                 }
             } catch (IOException ioe) {
-                Logger.getLogger(ProcessesUtils.class.getName()).log(Level.SEVERE, "Error closing reader", ioe);
+                Logger.getLogger(NativeUtils.class.getName()).log(Level.SEVERE, "Error closing reader", ioe);
             }
         }
 
@@ -92,10 +92,10 @@ public class ProcessesUtils {
             process = Runtime.getRuntime().exec(command);
             process.waitFor();
         } catch (IOException ex) {
-            Logger.getLogger(ProcessesUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NativeUtils.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
         } catch (InterruptedException ex) {
-            Logger.getLogger(ProcessesUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NativeUtils.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
         }
 

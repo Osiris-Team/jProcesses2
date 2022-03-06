@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jutils.jprocesses.model;
+package org.jutils.jprocesses;
 
-/**
- * Helper class to set different priority levels in Windows.
- *
- * @author Javier Garcia Alonso
- */
-public enum WindowsPriority {
-    IDLE(64),
-    BELOW_NORMAL(16384),
-    NORMAL(32),
-    ABOVE_NORMAL(32768),
-    HIGH(128),
-    REAL_TIME(258);
+public enum JProcessPriority {
+    IDLE(64, 0),
+    BELOW_NORMAL(16384, 0),
+    NORMAL(32, 0),
+    ABOVE_NORMAL(32768, 0),
+    HIGH(128, 0),
+    REAL_TIME(258, 0);
 
-    public int value = 0;
+    public int windowsPriority = 0;
+    public int unixPriority = 0; // TODO FIND OUT
 
-    WindowsPriority(int value) {
-        this.value = value;
+    JProcessPriority(int windowsPriority, int unixPriority) {
+        this.windowsPriority = windowsPriority;
+        this.unixPriority = unixPriority;
     }
 }

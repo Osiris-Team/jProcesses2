@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jutils.jprocesses.info;
+package org.jutils.jprocesses;
 
 import com.profesorfalken.wmi4java.WMI4Java;
 import com.profesorfalken.wmi4java.WMIClass;
-import org.jutils.jprocesses.model.JProcessesResponse;
-import org.jutils.jprocesses.model.ProcessInfo;
-import org.jutils.jprocesses.util.ProcessesUtils;
+import org.jutils.jprocesses.util.NativeResult;
+import org.jutils.jprocesses.util.NativeUtils;
 
 import java.util.*;
 
@@ -28,12 +27,12 @@ import java.util.*;
  *
  * @author Javier Garcia Alonso
  */
-public class WindowsProcessesService extends AbstractProcessesService {
+class WindowsProcessesService extends AbstractProcessesService {
     //TODO: This Windows implementation works but it is not optimized by lack of time.
 //For example, the filter by name or the search by pid is done retrieving 
 //all the processes searching in the returning list.
 //Moreover, the information is dispersed and I had to get it from different sources (WMI classes, VBS scripts...)
-    private final ProcessesUtils processesUtils = new ProcessesUtils();
+    private final NativeUtils nativeUtils = new NativeUtils();
     private final VBScriptHelper vbScriptHelper = new VBScriptHelper();
 
     private final Map<String, String> userData = new HashMap<String, String>();
@@ -118,7 +117,7 @@ public class WindowsProcessesService extends AbstractProcessesService {
 
             if (CREATIONDATE.equals(dataStringInfo[0].trim())) {
                 processMap.put("start_datetime",
-                        processesUtils.parseWindowsDateTimeToFullDate(dataStringInfo[1].trim()));
+                        nativeUtils.parseWindowsDateTimeToFullDate(dataStringInfo[1].trim()));
             }
         }
     }
@@ -148,9 +147,9 @@ public class WindowsProcessesService extends AbstractProcessesService {
     }
 
     @Override
-    protected JProcessesResponse kill(int pid) {
-        JProcessesResponse response = new JProcessesResponse();
-        if (processesUtils.executeCommandAndGetCode("taskkill", "/PID", String.valueOf(pid), "/F") == 0) {
+    protected NativeResult kill(int pid) {
+        NativeResult response = new NativeResult();
+        if (nativeUtils.executeCommandAndGetCode("taskkill", "/PID", String.valueOf(pid), "/F") == 0) {
             response.setSuccess(true);
         }
 
@@ -158,9 +157,9 @@ public class WindowsProcessesService extends AbstractProcessesService {
     }
 
     @Override
-    protected JProcessesResponse killGracefully(int pid) {
-        JProcessesResponse response = new JProcessesResponse();
-        if (processesUtils.executeCommandAndGetCode("taskkill", "/PID", String.valueOf(pid)) == 0) {
+    protected NativeResult killGracefully(int pid) {
+        NativeResult response = new NativeResult();
+        if (nativeUtils.executeCommandAndGetCode("taskkill", "/PID", String.valueOf(pid)) == 0) {
             response.setSuccess(true);
         }
 
@@ -183,7 +182,7 @@ public class WindowsProcessesService extends AbstractProcessesService {
             }
         }
         if (CREATIONDATE.equals(origKey)) {
-            return processesUtils.parseWindowsDateTimeToSimpleTime(origValue);
+            return nativeUtils.parseWindowsDateTimeToSimpleTime(origValue);
         }
 
         return origValue;
@@ -246,8 +245,8 @@ public class WindowsProcessesService extends AbstractProcessesService {
         return null;
     }
 
-    public JProcessesResponse changePriority(int pid, int priority) {
-        JProcessesResponse response = new JProcessesResponse();
+    public NativeResult changePriority(int pid, int priority) {
+        NativeResult response = new NativeResult();
         String message = vbScriptHelper.changePriority(pid, priority);
         if (message == null || message.length() == 0) {
             response.setSuccess(true);
@@ -257,17 +256,17 @@ public class WindowsProcessesService extends AbstractProcessesService {
         return response;
     }
 
-    public ProcessInfo getProcess(int pid) {
+    public JProcess getProcess(int pid) {
         return getProcess(pid, false);
     }
 
-    public ProcessInfo getProcess(int pid, boolean fastMode) {
+    public JProcess getProcess(int pid, boolean fastMode) {
         this.fastMode = fastMode;
         List<Map<String, String>> allProcesses = parseList(getProcessesData(null));
 
         for (final Map<String, String> process : allProcesses) {
             if (String.valueOf(pid).equals(process.get("pid"))) {
-                ProcessInfo info = new ProcessInfo();
+                JProcess info = new JProcess();
                 info.pid = (process.get("pid"));
                 info.name = (process.get("proc_name"));
                 info.time = (process.get("proc_time"));

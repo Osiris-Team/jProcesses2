@@ -5,9 +5,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.jutils.jprocesses.model.ProcessInfo;
-import org.jutils.jprocesses.model.WindowsPriority;
-import org.jutils.jprocesses.util.OSDetector;
+import org.jutils.jprocesses.util.OS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,6 @@ import static org.junit.Assert.assertTrue;
  */
 public class JProcessesTest {
     JProcesses jProcesses = new JProcesses();
-    private OSDetector os = new OSDetector();
 
     public JProcessesTest() {
     }
@@ -48,23 +45,23 @@ public class JProcessesTest {
     @Test
     public void testGetProcessList() {
         System.out.println("===============Testing getProcessList============");
-        List<ProcessInfo> processesList = new JProcesses().fastMode().getProcesses();
+        List<JProcess> processesList = new JProcesses().fastMode().getProcesses();
 
         assertTrue(processesList != null && processesList.size() > 0);
 
-        for (final ProcessInfo processInfo : processesList) {
-            System.out.println("Process PID: " + processInfo.pid);
-            System.out.println("Process Name: " + processInfo.name);
-            System.out.println("Process Time: " + processInfo.time);
-            System.out.println("User: " + processInfo.user);
-            System.out.println("Virtual Memory: " + processInfo.kbVirtualMemory);
-            System.out.println("Physical Memory: " + processInfo.kbWorkingSet);
-            System.out.println("CPU usage: " + processInfo.cpuUsage);
-            System.out.println("Start Time: " + processInfo.startTime);
+        for (final JProcess JProcess : processesList) {
+            System.out.println("Process PID: " + JProcess.pid);
+            System.out.println("Process Name: " + JProcess.name);
+            System.out.println("Process Time: " + JProcess.time);
+            System.out.println("User: " + JProcess.user);
+            System.out.println("Virtual Memory: " + JProcess.kbVirtualMemory);
+            System.out.println("Physical Memory: " + JProcess.kbWorkingSet);
+            System.out.println("CPU usage: " + JProcess.cpuUsage);
+            System.out.println("Start Time: " + JProcess.startTime);
             System.out.println("Start DateTime: "
-                    + processInfo.extraData.get("start_datetime"));
-            System.out.println("Priority: " + processInfo.priority);
-            System.out.println("Command: " + processInfo.command);
+                    + JProcess.extraData.get("start_datetime"));
+            System.out.println("Priority: " + JProcess.priority);
+            System.out.println("Command: " + JProcess.command);
             System.out.println("------------------");
         }
         System.out.println("===============End test getProcessList============");
@@ -78,32 +75,32 @@ public class JProcessesTest {
         System.out.println("===============Testing getProcessList by name============");
         //JProcesses.fastMode = true;
         String processToSearch = "java";
-        if (os.isWindows()) {
+        if (OS.isWindows) {
             processToSearch += ".exe";
         }
 
-        List<ProcessInfo> processesList = jProcesses.getProcesses(processToSearch);
+        List<JProcess> processesList = jProcesses.getProcesses(processToSearch);
 
         assertTrue(processesList != null && processesList.size() > 0);
 
-        for (final ProcessInfo processInfo : processesList) {
-            System.out.println("Process PID: " + processInfo.pid);
-            System.out.println("Process Name: " + processInfo.name);
-            System.out.println("Process Time: " + processInfo.time);
-            System.out.println("User: " + processInfo.user);
-            System.out.println("Virtual Memory: " + processInfo.kbVirtualMemory);
-            System.out.println("Physical Memory: " + processInfo.kbWorkingSet);
-            System.out.println("CPU usage: " + processInfo.cpuUsage);
-            System.out.println("Start Time: " + processInfo.startTime);
-            System.out.println("Priority: " + processInfo.priority);
-            System.out.println("Command: " + processInfo.command);
+        for (final JProcess JProcess : processesList) {
+            System.out.println("Process PID: " + JProcess.pid);
+            System.out.println("Process Name: " + JProcess.name);
+            System.out.println("Process Time: " + JProcess.time);
+            System.out.println("User: " + JProcess.user);
+            System.out.println("Virtual Memory: " + JProcess.kbVirtualMemory);
+            System.out.println("Physical Memory: " + JProcess.kbWorkingSet);
+            System.out.println("CPU usage: " + JProcess.cpuUsage);
+            System.out.println("Start Time: " + JProcess.startTime);
+            System.out.println("Priority: " + JProcess.priority);
+            System.out.println("Command: " + JProcess.command);
             System.out.println("------------------");
         }
 
         //Compare list with a manually retrieved list
-        List<ProcessInfo> processesListFull = jProcesses.getProcesses();
-        List<ProcessInfo> processesListFound = new ArrayList<ProcessInfo>();
-        for (final ProcessInfo process : processesListFull) {
+        List<JProcess> processesListFull = jProcesses.getProcesses();
+        List<JProcess> processesListFound = new ArrayList<JProcess>();
+        for (final JProcess process : processesListFull) {
             if (processToSearch.equals(process.name)) {
                 processesListFound.add(process);
             }
@@ -134,13 +131,13 @@ public class JProcessesTest {
     //@Test
     public void testChangePriority() {
         System.out.println("===============Testing changePriority============");
-        boolean ok = jProcesses.changePriority(3260, WindowsPriority.HIGH.value).isSuccess();
+        boolean ok = jProcesses.changePriority(3260, JProcessPriority.HIGH.windowsPriority).isSuccess();
         assertTrue(ok);
 
-        ProcessInfo process = jProcesses.getProcess(3260);
+        JProcess process = jProcesses.getProcess(3260);
         assertTrue(String.valueOf(13).equals(process.priority));
 
-        ok = jProcesses.changePriority(3260, WindowsPriority.NORMAL.value).isSuccess();
+        ok = jProcesses.changePriority(3260, JProcessPriority.NORMAL.windowsPriority).isSuccess();
         assertTrue(ok);
 
         process = jProcesses.getProcess(3260);

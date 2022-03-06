@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jutils.jprocesses.model;
+package org.jutils.jprocesses;
+
+import org.jutils.jprocesses.util.NativeResult;
+import org.jutils.jprocesses.util.NativeUtils;
+import org.jutils.jprocesses.util.OS;
 
 import java.util.*;
 
@@ -22,13 +26,13 @@ import java.util.*;
  *
  * @author Javier Garcia Alonso
  */
-public class ProcessInfo {
+public class JProcess {
 
     public String name;
     public String caption;
     public String pid;
     public String time; // TODO Remove
-    public String user; // TODO remove
+    public String user;
     public String kbVirtualMemory;
     public String kbWorkingSet;
     public String cpuUsage;
@@ -38,9 +42,9 @@ public class ProcessInfo {
      */
     public String startTime;
     /**
-     * The priority of this process as int. <br>
-     * Note that Windows and Unix priorities are different. <br>
-     * For Windows see the {@link WindowsPriority} enum, for Unix value range from //TODO find this out. <br>
+     * The priority of this process. <br>
+     * Note that this is a raw and system-dependent value, <br>
+     * thus it's recommended to use {@link #getPriority()} instead. <br>
      */
     public String priority;
     /**
@@ -49,16 +53,16 @@ public class ProcessInfo {
     public String command;
 
     public String parentPid;
-    public ProcessInfo parentProcess;
-    public List<ProcessInfo> childProcesses = new ArrayList<>(1);
+    public JProcess parentProcess;
+    public List<JProcess> childProcesses = new ArrayList<>(1);
 
     //Used to store system specific data
     public Map<String, String> extraData = new HashMap<String, String>();
 
-    public ProcessInfo(){
+    public JProcess(){
     }
 
-    public ProcessInfo(String pid, String time, String name, String user, String kbVirtualMemory, String kbWorkingSet, String cpuUsage, String startTime, String priority, String command) {
+    public JProcess(String pid, String time, String name, String user, String kbVirtualMemory, String kbWorkingSet, String cpuUsage, String startTime, String priority, String command) {
         this.pid = pid;
         this.time = time;
         this.name = name;
@@ -76,7 +80,7 @@ public class ProcessInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ProcessInfo that = (ProcessInfo) o;
+        JProcess that = (JProcess) o;
 
         if (!Objects.equals(pid, that.pid)) return false;
         if (!Objects.equals(time, that.time)) return false;
@@ -91,6 +95,76 @@ public class ProcessInfo {
         if (!Objects.equals(priority, that.priority)) return false;
         return Objects.equals(command, that.command);
 
+    }
+
+    public NativeResult stop(){
+        NativeUtils nativeUtils = new NativeUtils();
+        NativeResult response = new NativeResult();
+        if(OS.isWindows){
+            if (nativeUtils.executeCommandAndGetCode("taskkill", "/PID", String.valueOf(pid)) == 0) {
+                response.setSuccess(true);
+            }
+        } else{
+            if (nativeUtils.executeCommandAndGetCode("kill", "-15", String.valueOf(pid)) == 0) {
+                response.setSuccess(true);
+            }
+        }
+        return response;
+    }
+
+    public NativeResult kill(){
+        NativeUtils nativeUtils = new NativeUtils();
+        NativeResult response = new NativeResult();
+        if(OS.isWindows){
+            if (nativeUtils.executeCommandAndGetCode("taskkill", "/PID", String.valueOf(pid), "/F") == 0) {
+                response.setSuccess(true);
+            }
+        } else{
+            if (nativeUtils.executeCommandAndGetCode("kill", "-9", String.valueOf(pid)) == 0) {
+                response.setSuccess(true);
+            }
+        }
+        return response;
+    }
+
+    public NativeResult changePriority(JProcessPriority priority){
+        if(OS.isWindows)
+            return changePriority(priority.windowsPriority);
+        else
+            return changePriority(priority.unixPriority);
+    }
+
+    public NativeResult changePriority(int priority){
+        if(OS.isWindows){
+            VBScriptHelper vbScriptHelper = new VBScriptHelper();
+            NativeResult response = new NativeResult();
+            String message = vbScriptHelper.changePriority(Integer.parseInt(pid), priority);
+            if (message == null || message.length() == 0) {
+                response.setSuccess(true);
+                this.priority = ""+priority;
+            } else {
+                response.setMessage(message);
+            }
+            return response;
+        } else{
+            NativeUtils nativeUtils = new NativeUtils();
+            NativeResult result = new NativeResult();
+            if (nativeUtils.executeCommandAndGetCode("renice", ""+priority,
+                    "-p", pid) == 0) {
+                result.setSuccess(true);
+                this.priority = ""+priority;
+            }
+            return result;
+        }
+    }
+
+    public JProcessPriority getPriority(){
+        if (OS.isWindows){
+            //TODO
+        } else{
+            //TODO
+        }
+        return null;
     }
 
     @Override

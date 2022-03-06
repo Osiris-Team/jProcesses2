@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jutils.jprocesses.info;
+package org.jutils.jprocesses;
 
-import org.jutils.jprocesses.model.JProcessesResponse;
-import org.jutils.jprocesses.model.ProcessInfo;
+import org.jutils.jprocesses.util.NativeResult;
 
 import java.util.List;
 
@@ -26,21 +25,21 @@ import java.util.List;
  * @author Javier Garcia Alonso
  */
 public interface ProcessesService {
-    List<ProcessInfo> getList();
+    List<JProcess> getList();
 
-    List<ProcessInfo> getList(boolean fastMode);
+    List<JProcess> getList(boolean fastMode);
 
-    List<ProcessInfo> getList(String name);
+    List<JProcess> getList(String name);
 
-    List<ProcessInfo> getList(String name, boolean fastMode);
+    List<JProcess> getList(String name, boolean fastMode);
 
-    ProcessInfo getProcess(int pid);
+    JProcess getProcess(int pid);
 
-    ProcessInfo getProcess(int pid, boolean fastMode);
+    JProcess getProcess(int pid, boolean fastMode);
 
-    JProcessesResponse killProcess(int pid);
+    NativeResult killProcess(int pid);
 
-    JProcessesResponse killProcessGracefully(int pid);
+    NativeResult killProcessGracefully(int pid);
 
-    JProcessesResponse changePriority(int pid, int priority);
+    NativeResult changePriority(int pid, int priority);
 }

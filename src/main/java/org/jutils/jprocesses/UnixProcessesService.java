@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jutils.jprocesses.info;
+package org.jutils.jprocesses;
 
-import org.jutils.jprocesses.model.JProcessesResponse;
-import org.jutils.jprocesses.model.ProcessInfo;
-import org.jutils.jprocesses.util.OSDetector;
-import org.jutils.jprocesses.util.ProcessesUtils;
+import org.jutils.jprocesses.util.NativeResult;
+import org.jutils.jprocesses.util.OS;
+import org.jutils.jprocesses.util.NativeUtils;
 
 import java.text.ParseException;
 import java.util.*;
@@ -28,9 +27,8 @@ import java.util.*;
  *
  * @author Javier Garcia Alonso
  */
-public class UnixProcessesService extends AbstractProcessesService {
-    private final OSDetector osDetector = new OSDetector();
-    private final ProcessesUtils processesUtils = new ProcessesUtils();
+class UnixProcessesService extends AbstractProcessesService {
+    private final NativeUtils nativeUtils = new NativeUtils();
 
     //Use BSD sytle to get data in order to be compatible with Mac Systems(thanks to jkuharev for this tip)
     private final String PS_COLUMNS = "pid,ruser,vsize,rss,%cpu,lstart,cputime,nice,ucomm";
@@ -69,7 +67,7 @@ public class UnixProcessesService extends AbstractProcessesService {
                 element.put("start_time", elements[index - 2]);
                 try {
                     element.put("start_datetime",
-                            processesUtils.parseUnixLongTimeToFullDate(longDate));
+                            nativeUtils.parseUnixLongTimeToFullDate(longDate));
                 } catch (ParseException e) {
                     element.put("start_datetime", "01/01/2000 00:00:00");
                     System.err.println("Failed formatting date from ps: " + longDate + ", using \"01/01/2000 00:00:00\"");
@@ -95,57 +93,57 @@ public class UnixProcessesService extends AbstractProcessesService {
     @Override
     protected String getProcessesData(String name) {
         if (name != null) {
-            if (osDetector.isLinux()) {
-                return processesUtils.executeCommand("ps",
+            if (OS.isLinux) {
+                return nativeUtils.executeCommand("ps",
                         "-o", PS_COLUMNS, "-C", name);
             } else {
                 this.nameFilter = name;
             }
         }
-        return processesUtils.executeCommand("ps",
+        return nativeUtils.executeCommand("ps",
                 "-e", "-o", PS_COLUMNS);
     }
 
     @Override
-    protected JProcessesResponse kill(int pid) {
-        JProcessesResponse response = new JProcessesResponse();
-        if (processesUtils.executeCommandAndGetCode("kill", "-9", String.valueOf(pid)) == 0) {
+    protected NativeResult kill(int pid) {
+        NativeResult response = new NativeResult();
+        if (nativeUtils.executeCommandAndGetCode("kill", "-9", String.valueOf(pid)) == 0) {
             response.setSuccess(true);
         }
         return response;
     }
 
     @Override
-    protected JProcessesResponse killGracefully(int pid) {
-        JProcessesResponse response = new JProcessesResponse();
-        if (processesUtils.executeCommandAndGetCode("kill", "-15", String.valueOf(pid)) == 0) {
+    protected NativeResult killGracefully(int pid) {
+        NativeResult response = new NativeResult();
+        if (nativeUtils.executeCommandAndGetCode("kill", "-15", String.valueOf(pid)) == 0) {
             response.setSuccess(true);
         }
         return response;
     }
 
-    public JProcessesResponse changePriority(int pid, int priority) {
-        JProcessesResponse response = new JProcessesResponse();
-        if (processesUtils.executeCommandAndGetCode("renice", String.valueOf(priority),
+    public NativeResult changePriority(int pid, int priority) {
+        NativeResult response = new NativeResult();
+        if (nativeUtils.executeCommandAndGetCode("renice", String.valueOf(priority),
                 "-p", String.valueOf(pid)) == 0) {
             response.setSuccess(true);
         }
         return response;
     }
 
-    public ProcessInfo getProcess(int pid) {
+    public JProcess getProcess(int pid) {
         return getProcess(pid, false);
     }
 
-    public ProcessInfo getProcess(int pid, boolean fastMode) {
+    public JProcess getProcess(int pid, boolean fastMode) {
         this.fastMode = fastMode;
         List<Map<String, String>> processList
-                = parseList(processesUtils.executeCommand("ps",
+                = parseList(nativeUtils.executeCommand("ps",
                 "-o", PS_COLUMNS, "-p", String.valueOf(pid)));
 
         if (processList != null && !processList.isEmpty()) {
             Map<String, String> processData = processList.get(0);
-            ProcessInfo info = new ProcessInfo();
+            JProcess info = new JProcess();
             info.pid = (processData.get("pid"));
             info.name = (processData.get("proc_name"));
             info.time = (processData.get("proc_time"));
@@ -164,7 +162,7 @@ public class UnixProcessesService extends AbstractProcessesService {
 
     private void loadFullCommandData(List<Map<String, String>> processesDataList) {
         Map<String, String> commandsMap = new HashMap<String, String>();
-        String data = processesUtils.executeCommand("ps",
+        String data = nativeUtils.executeCommand("ps",
                 "-e", "-o", PS_FULL_COMMAND);
         String[] dataStringLines = data.split("\\r?\\n");
 
