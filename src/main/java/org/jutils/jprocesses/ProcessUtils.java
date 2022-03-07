@@ -6,6 +6,7 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class ProcessUtils {
 
@@ -245,51 +246,54 @@ public class ProcessUtils {
         }
     }
 
+    /**
+     * REPL for fetching and displaying process information.
+     */
     public void initCMDTool() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in))) {
-                    try (PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out))) {
-                        out.println("Initialised jProcess2 command line tool. To exit it enter 'exit', for a list of commands enter 'help'.");
-                        out.println("Fetching processes...");
-                        ProcessUtils processUtils = new ProcessUtils();
-                        List<JProcess> processes = processUtils.getProcesses();
-                        out.println("Done!");
-                        boolean exit = false;
-                        String command = null;
-                        while (!exit) {
-                            command = in.readLine();
-                            try {
-                                if (command.equals("exit")) {
-                                    exit = true;
-                                } else if (command.equals("help") || command.equals("h")) {
-                                    out.println("Available commands:");
-                                    out.println("help | Prints all available commands. (Shortcut: h)");
-                                    out.println("exit | Exit the jProcess2 command line tool. (e)");
-                                    out.println("fetch | Fetches all currently running processes details. (f)");
-                                    out.println("print | Prints a list with all processes details. (p)");
-                                    out.println("print tree | Prints a list with all processes details but also their parent/child relations. (pt)");
-                                } else if (command.equals("fetch") || command.equals("f")) {
-                                    out.println("Fetching processes...");
-                                    processes = processUtils.getProcesses();
-                                    out.println("Done!");
-                                } else if (command.equals("print") || command.equals("p")) {
-                                    out.println("Printing all processes...");
-                                    for (JProcess p : processes) {
-                                        out.println(p.toPrintString());
-                                    }
-                                    out.println("Done!");
-                                } else if (command.equals("print tree") || command.equals("pt")) {
-                                    out.println("Printing all processes tree...");
-                                    processUtils.printTree(processes);
-                                    out.println("Done!");
-                                } else {
-                                    out.println("Unknown command. Enter 'help' or 'h' for a list of all commands.");
+                try {
+                    PrintStream out = System.out;
+                    Scanner scanner = new Scanner(System.in);
+                    out.println("Initialised jProcess2 command line tool. To exit it enter 'exit', for a list of commands enter 'help'.");
+                    out.println("Fetching processes...");
+                    ProcessUtils processUtils = new ProcessUtils();
+                    List<JProcess> processes = processUtils.getProcesses();
+                    out.println("Done!");
+                    boolean exit = false;
+                    String command = null;
+                    while (!exit) {
+                        command = scanner.nextLine();
+                        try {
+                            if (command.equals("exit")) {
+                                exit = true;
+                            } else if (command.equals("help") || command.equals("h")) {
+                                out.println("Available commands:");
+                                out.println("help | Prints all available commands. (Shortcut: h)");
+                                out.println("exit | Exit the jProcess2 command line tool. (e)");
+                                out.println("fetch | Fetches all currently running processes details. (f)");
+                                out.println("print | Prints a list with all processes details. (p)");
+                                out.println("print tree | Prints a list with all processes details but also their parent/child relations. (pt)");
+                            } else if (command.equals("fetch") || command.equals("f")) {
+                                out.println("Fetching processes...");
+                                processes = processUtils.getProcesses();
+                                out.println("Done!");
+                            } else if (command.equals("print") || command.equals("p")) {
+                                out.println("Printing all processes...");
+                                for (JProcess p : processes) {
+                                    out.println(p.toPrintString());
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                out.println("Done!");
+                            } else if (command.equals("print tree") || command.equals("pt")) {
+                                out.println("Printing all processes tree...");
+                                processUtils.printTree(processes);
+                                out.println("Done!");
+                            } else {
+                                out.println("Unknown command. Enter 'help' or 'h' for a list of all commands.");
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 } catch (IOException e) {
