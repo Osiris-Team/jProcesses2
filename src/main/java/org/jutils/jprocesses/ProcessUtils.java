@@ -277,7 +277,7 @@ public class ProcessUtils {
                                 } else if (command.equals("print") || command.equals("p")) {
                                     out.println("Printing all processes...");
                                     for (JProcess p : processes) {
-                                        p.toPrintString();
+                                        out.println(p.toPrintString());
                                     }
                                     out.println("Done!");
                                 } else if (command.equals("print tree") || command.equals("pt")) {
