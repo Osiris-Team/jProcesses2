@@ -3,12 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jprocesses</groupId>
     <artifactId>jProcesses</artifactId>
-    <version>2.0.1</version>
+    <version>2.1.1</version>
     <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java>1.7</java>
+        <main.class>org.jutils.jprocesses.Main</main.class>
     </properties>
     
     <name>jProcesses</name>
@@ -61,9 +62,7 @@
                 </configuration>
             </plugin>
 
-            <!--
-            Make this jar executable.
-            Remember to check the the jars entry point (main.class property above).
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -76,14 +75,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            -->
 
-            <!--
-            Puts your dependencies into the output jar file.
-            Normally when developing an API, that is only used by other devs
-            you won't need to do this.
-            But if you are developing an application for regular people,
-            you should uncomment this section.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -100,7 +92,7 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
+
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

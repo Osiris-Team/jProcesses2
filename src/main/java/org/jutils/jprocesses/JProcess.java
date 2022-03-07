@@ -91,7 +91,7 @@ public class JProcess {
     public JProcess() {
     }
 
-    public JProcess(String pid, String time, String name, String username, String usedVirtualMemoryInKB, String usedMemoryInKB, String cpuUsage, String timestampStart, String priority, String command) {
+    public JProcess(String pid, String name, String username, String usedVirtualMemoryInKB, String usedMemoryInKB, String cpuUsage, String timestampStart, String priority, String command) {
         this.pid = pid;
         this.name = name;
         this.username = username;
