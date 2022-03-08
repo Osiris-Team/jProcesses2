@@ -2,7 +2,10 @@ package org.jutils.jprocesses;
 
 import org.jutils.jprocesses.util.OS;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,14 +50,13 @@ public class ProcessUtils {
     private List<JProcess> fetchUnixProcesses() throws IOException {
         // ps -e -o pid,ruser,vsize,rss,%cpu,lstart,cputime,nice,ucomm,command
         // The first returned line contains enables us to determine the column widths
-        Process process = new ProcessBuilder().command("ps", "-ww", "-e", "-o", "pid,ruser,vsize,rss,%cpu,lstart,nice,ppid,ucomm,command").start();
-        int lUcomm, lPid, lRuser, lVsize, lRss, lcpu, lLstart, lNice, lPpid; // l = length. Length of chars each of that columns takes. Last columns' length (command) doesn't matter.
-        String pid, ruser, vsz, rss, cpu, started, ni, ppid;
+        Process process = new ProcessBuilder().command("ps", "-ww", "-e", "-o", "pid,ruser,vsize,rss,lstart,nice,ppid,ucomm,command").start();
+        int lUcomm, lPid, lRuser, lVsize, lRss, lLstart, lNice, lPpid; // l = length. Length of chars each of that columns takes. Last columns' length (command) doesn't matter.
+        String pid, ruser, vsz, rss, started, ni, ppid;
         pid = "PID";
         ruser = "RUSER";
         vsz = "VSZ";
         rss = "RSS";
-        cpu = "%CPU";
         started = "STARTED";
         ni = "NI";
         ppid = "PPID";
@@ -66,7 +68,6 @@ public class ProcessUtils {
             lRuser = (firstLine.indexOf(ruser) + ruser.length());
             lVsize = (firstLine.indexOf(vsz) + vsz.length());
             lRss = (firstLine.indexOf(rss) + rss.length());
-            lcpu = (firstLine.indexOf(cpu) + cpu.length());
             lLstart = (firstLine.indexOf(started) + started.length());
             lNice = (firstLine.indexOf(ni) + ni.length());
             lPpid = (firstLine.indexOf(ppid) + ppid.length());
@@ -77,8 +78,7 @@ public class ProcessUtils {
                 p.username = line.substring(lPid, lRuser).trim();
                 p.usedVirtualMemoryInKB = line.substring(lRuser, lVsize).trim();
                 p.usedMemoryInKB = line.substring(lVsize, lRss).trim();
-                p.cpuUsage = line.substring(lRss, lcpu).trim();
-                p.timestampStart = line.substring(lcpu, lLstart).trim();
+                p.timestampStart = line.substring(lRss, lLstart).trim();
                 p.priority = line.substring(lLstart, lNice).trim();
                 p.parentPid = line.substring(lNice, lPpid).trim();
                 p.name = line.substring(lPpid, lUcomm).trim();
@@ -182,9 +182,6 @@ public class ProcessUtils {
                 }
             }
         }
-        // TODO retrieve cpuUsage and time via:
-        // TODO  wmic path Win32_PerfFormattedData_PerfProc_Process get PercentProcessorTime,ElapsedTime /VALUE
-        // Only problem is that the command above is slow af
         setParentChildProcesses(list);
         return list;
     }

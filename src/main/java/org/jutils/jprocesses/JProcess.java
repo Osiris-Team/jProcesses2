@@ -19,6 +19,9 @@ import org.jutils.jprocesses.util.NativeResult;
 import org.jutils.jprocesses.util.NativeUtils;
 import org.jutils.jprocesses.util.OS;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.*;
 
@@ -57,12 +60,6 @@ public class JProcess {
      */
     public String usedMemoryInKB;
     /**
-     * The CPU usage of this process. <br>
-     * A value between 0.0 (0%) and 100.0 (100%).<br>
-     * Note that this is currently not supported for Windows. TODO find a way of making this available for Windows.
-     */
-    public String cpuUsage;
-    /**
      * The timestamp of when this process was created. <br>
      * Note that this is a raw and system-dependent value, <br>
      * thus it's recommended to use {@link #getTimestampStart()} instead. <br>
@@ -91,13 +88,12 @@ public class JProcess {
     public JProcess() {
     }
 
-    public JProcess(String pid, String name, String username, String usedVirtualMemoryInKB, String usedMemoryInKB, String cpuUsage, String timestampStart, String priority, String command) {
+    public JProcess(String pid, String name, String username, String usedVirtualMemoryInKB, String usedMemoryInKB, String timestampStart, String priority, String command) {
         this.pid = pid;
         this.name = name;
         this.username = username;
         this.usedVirtualMemoryInKB = usedVirtualMemoryInKB;
         this.usedMemoryInKB = usedMemoryInKB;
-        this.cpuUsage = cpuUsage;
         this.timestampStart = timestampStart;
         this.priority = priority;
         this.command = command;
@@ -164,6 +160,63 @@ public class JProcess {
         }
     }
 
+    /**
+     * Fetches fresh additional process information.
+     */
+    public JProcessExtra getExtraInfo() throws IOException {
+        if (OS.isWindows) return fetchExtraInfoWindows();
+        else return fetchExtraInfoUnix();
+    }
+
+    private JProcessExtra fetchExtraInfoWindows() throws IOException {
+        Process process = new ProcessBuilder().command("wmic", "process", "where", "\"ProcessId=" + pid + "\"",
+                "get", "ThreadCount,PageFaults", "/VALUE").start();
+        String line = "";
+        JProcessExtra extra = new JProcessExtra();
+        int countRead = 1;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("ThreadCount")) {
+                    extra.threadCount = line.substring(line.indexOf("=") + 1);
+                    if (countRead == 2) {
+                        countRead = 0;
+                    }
+                    countRead++;
+                } else if (line.startsWith("PageFaults")) {
+                    extra.minorPageFaults = line.substring(line.indexOf("=") + 1);
+                    if (countRead == 2) {
+                        countRead = 0;
+                    }
+                    countRead++;
+                }
+            }
+        }
+        extra.isAlive = extra.threadCount != null;
+        return extra;
+    }
+
+    private JProcessExtra fetchExtraInfoUnix() throws IOException {
+        // ps -e -o pid,ruser,vsize,rss,%cpu,lstart,cputime,nice,ucomm,command
+        // The first returned line contains enables us to determine the column widths
+        Process process = new ProcessBuilder().command("ps", "-ww", "-p", pid, "-o", "min_flt,nlwp").start();
+        int lUcomm, lMinflt; // l = length. Length of chars each of that columns takes. Last columns' length (command) doesn't matter.
+        String minflt, nlwp;
+        minflt = "MINFLT";
+        nlwp = "NLWP";
+        String line = "";
+        JProcessExtra extra = new JProcessExtra();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String firstLine = br.readLine(); // Contains the table header and gives us info about the column lengths
+            lMinflt = (firstLine.indexOf(minflt) + minflt.length()); // No -1 bc in .substring() the last index is excluded.
+            while ((line = br.readLine()) != null) {
+                extra.minorPageFaults = line.substring(0, lMinflt).trim();
+                extra.threadCount = line.substring(lMinflt, line.length() - 1).trim();
+            }
+        }
+        extra.isAlive = extra.threadCount != null;
+        return extra;
+    }
+
     public JProcessPriority getPriority() {
         int prio = Integer.parseInt(priority);
         if (OS.isWindows) {
@@ -212,7 +265,7 @@ public class JProcess {
     }
 
     public String toPrintString() {
-        return "NAME:" + name + " PID:" + pid + " CPU:" + cpuUsage + " MEM:" + usedMemoryInKB
+        return "NAME:" + name + " PID:" + pid + " MEM:" + usedMemoryInKB
                 + "	PRIORITY:" + priority + " CMD:" + command;
     }
 
