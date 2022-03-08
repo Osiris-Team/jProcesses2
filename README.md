@@ -3,7 +3,7 @@ Fork of [JProcesses](https://github.com/profesorfalken/jProcesses) with addition
 Add this as dependency to your project via [Maven/Gradle/Sbt/Leinigen](https://jitpack.io/#Osiris-Team/jProcesses2/LATEST) (requires Java 7 or higher).
 
 ### Features
-- Similar to the [Java 9 Process API](https://docs.oracle.com/javase/9/docs/api/java/lang/Process.html), but also runs on Java 8 and 7, and provides more process details.
+- Similar to the [Java 9 Process API](https://docs.oracle.com/javase/9/docs/api/java/lang/Process.html), but provides more process details and also runs on Java 7 and 8.
 - Parent/child process details and easy cross-plaftform processes priority changing.
 - Easy access to the currently running JVM process.
 ```java
