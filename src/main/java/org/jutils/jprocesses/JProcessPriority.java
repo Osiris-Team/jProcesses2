@@ -24,7 +24,7 @@ public enum JProcessPriority {
     REAL_TIME(258, -20);
 
     public int windowsPriority = 0;
-    public int unixPriority = 0; // TODO FIND OUT
+    public int unixPriority = 0;
 
     JProcessPriority(int windowsPriority, int unixPriority) {
         this.windowsPriority = windowsPriority;
