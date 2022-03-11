@@ -28,9 +28,10 @@ class Example{
             Date timestampStart = process.getTimestampStart();
 
             // Interact with the process:
-            process.changePriority(JProcessPriority.REAL_TIME);
-            process.stop();
-            process.kill();
+            //process.changePriority(JProcessPriority.REAL_TIME);
+            //process.stop();
+            //process.kill();
+            // Commented just in case you want to run this code.
         }
 
         // Easy access to the running JVM process:
