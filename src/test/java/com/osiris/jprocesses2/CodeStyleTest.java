@@ -1,4 +1,4 @@
-package org.jutils.jprocesses;
+package com.osiris.jprocesses2;
 
 import org.junit.Test;
 
@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class CodeStyleTest {
     @Test

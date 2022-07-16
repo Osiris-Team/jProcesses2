@@ -1,4 +1,4 @@
-package org.jutils.jprocesses;
+package com.osiris.jprocesses2;
 
 import junit.framework.TestCase;
 

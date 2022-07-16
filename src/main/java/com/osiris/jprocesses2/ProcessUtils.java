@@ -1,13 +1,11 @@
-package org.jutils.jprocesses;
+package com.osiris.jprocesses2;
 
+import com.osiris.jprocesses2.util.OS;
 import com.sun.jna.Platform;
-import com.sun.jna.platform.win32.Kernel32;
-import org.jutils.jprocesses.util.OS;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 public class ProcessUtils {
 

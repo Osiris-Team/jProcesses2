@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jutils.jprocesses;
+package com.osiris.jprocesses2;
 
-import org.jutils.jprocesses.util.NativeResult;
-import org.jutils.jprocesses.util.NativeUtils;
-import org.jutils.jprocesses.util.OS;
+import com.osiris.jprocesses2.util.NativeResult;
+import com.osiris.jprocesses2.util.NativeUtils;
+import com.osiris.jprocesses2.util.OS;
 
 import java.io.BufferedReader;
 import java.io.IOException;

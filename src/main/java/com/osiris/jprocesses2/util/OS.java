@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jutils.jprocesses.util;
+package com.osiris.jprocesses2.util;
 
 public class OS {
     public static boolean isWindows, isUnix, isMac, isLinux, isSolaris;

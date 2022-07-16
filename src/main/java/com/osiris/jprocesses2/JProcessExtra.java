@@ -1,4 +1,4 @@
-package org.jutils.jprocesses;
+package com.osiris.jprocesses2;
 
 /**
  * Extra, more detailed information about the {@link JProcess}.
