@@ -18,37 +18,37 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
 
-      - uses: actions/checkout@v3
-      - name: Set up JDK 16
-        uses: actions/setup-java@v3
-        with:
-          java-version: '16'
-          distribution: 'temurin'
-          cache: maven
+    - uses: actions/checkout@v3
+    - name: Set up JDK 16
+      uses: actions/setup-java@v3
+      with:
+        java-version: '16'
+        distribution: 'temurin'
+        cache: maven
 
-      - name: Build with Maven
-        shell: pwsh
-        run: mvn -B package --file pom.xml
+    - name: Build with Maven
+      shell: pwsh
+      run: mvn -B package --file pom.xml -DskipTests
 
-      - name: Show files.
-        run: |
-          echo Showing current directory:
-          ls
-          echo Showing ./target directory:
-          ls ./target
-
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: ${{ github.event.inputs.version }}
-          prerelease: false
-          title: ${{ github.event.inputs.version }}
-          files: |
-            ./target/*.tar.gz
-            ./target/*.zip
-            ./target/*.jar
-            ./target/*.exe
+    - name: Show files.
+      run: |
+        echo Showing current directory:
+        ls
+        echo Showing ./target directory:
+        ls ./target
+      
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: ${{ github.event.inputs.version }}
+        prerelease: false
+        title: ${{ github.event.inputs.version }}
+        files: |
+          ./target/*.tar.gz
+          ./target/*.zip
+          ./target/*.jar
+          ./target/*.exe
