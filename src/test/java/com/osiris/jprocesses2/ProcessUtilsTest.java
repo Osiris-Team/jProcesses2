@@ -1,6 +1,7 @@
 package com.osiris.jprocesses2;
 
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.text.ParseException;

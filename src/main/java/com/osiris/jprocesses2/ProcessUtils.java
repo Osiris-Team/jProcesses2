@@ -76,42 +76,39 @@ public class ProcessUtils {
         // ps -e -o pid,ruser,vsize,rss,%cpu,lstart,cputime,nice,ucomm,command
         // The first returned line contains enables us to determine the column widths
         Process process = new ProcessBuilder().command("ps", "-ww", "-e", "-o", "pid,ruser,vsize,rss,lstart,nice,ppid,ucomm,command").start();
-        int lUcomm, lPid, lRuser, lVsize, lRss, lLstart, lNice, lPpid; // l = length. Length of chars each of that columns takes. Last columns' length (command) doesn't matter.
-        String pid, ruser, vsz, rss, started, ni, ppid;
-        pid = "PID";
-        ruser = "RUSER";
-        vsz = "VSZ";
-        rss = "RSS";
-        started = "STARTED";
-        ni = "NI";
-        ppid = "PPID";
-        List<JProcess> list = new ArrayList<>(50);
+        List<JProcess> processesList = new ArrayList<>(50);
         String line = "";
         try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String firstLine = br.readLine(); // Contains the table header and gives us info about the column lengths
-            lPid = (firstLine.indexOf(pid) + pid.length()); // No -1 bc in .substring() the last index is excluded.
-            lRuser = (firstLine.indexOf(ruser) + ruser.length());
-            lVsize = (firstLine.indexOf(vsz) + vsz.length());
-            lRss = (firstLine.indexOf(rss) + rss.length());
-            lLstart = (firstLine.indexOf(started) + started.length());
-            lNice = (firstLine.indexOf(ni) + ni.length());
-            lPpid = (firstLine.indexOf(ppid) + ppid.length());
-            lUcomm = firstLine.lastIndexOf("COMMAND");
             while ((line = br.readLine()) != null) {
                 JProcess p = new JProcess();
-                p.pid = line.substring(0, lPid).trim();
-                p.username = line.substring(lPid, lRuser).trim();
-                p.usedVirtualMemoryInKB = line.substring(lRuser, lVsize).trim();
-                p.usedMemoryInKB = line.substring(lVsize, lRss).trim();
-                p.timestampStart = line.substring(lRss, lLstart).trim();
-                p.priority = line.substring(lLstart, lNice).trim();
-                p.parentPid = line.substring(lNice, lPpid).trim();
-                p.name = line.substring(lPpid, lUcomm).trim();
-                p.command = line.substring(lUcomm, line.length() - 1).trim();
-                list.add(p);
+                List<String> list = splitBySpaces(line);
+                p.pid = list.get(0);
+                p.username = list.get(1);
+                p.usedVirtualMemoryInKB = list.get(2);
+                p.usedMemoryInKB = list.get(3);
+                p.timestampStart = list.get(4) +" "+ list.get(5)+" "+list.get(6)+" "+list.get(7)+" "+list.get(8);
+                p.priority = list.get(9);
+                p.parentPid = list.get(10);
+                p.name = list.get(11);
+                for (int i = 12; i < list.size(); i++) {
+                    p.command += list.get(i)+" ";
+                }
+                p.command.trim();
+                processesList.add(p);
             }
         }
-        setParentChildProcesses(list);
+        setParentChildProcesses(processesList);
+        return processesList;
+    }
+
+    /**
+     * Additionally removes empty strings.
+     */
+    private List<String> splitBySpaces(String s){
+        List<String> list = new ArrayList<>();
+        for (String s1 : s.split(" ")) {
+            if(!s1.isEmpty()) list.add(s1);
+        }
         return list;
     }
 
