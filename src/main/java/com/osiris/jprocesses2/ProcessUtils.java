@@ -78,9 +78,10 @@ public class ProcessUtils {
         Process process = new ProcessBuilder().command("ps", "-ww", "-e", "-o", "pid,ruser,vsize,rss,lstart,nice,ppid,ucomm,command").start();
         List<JProcess> processesList = new ArrayList<>(50);
         String line = "";
+        JProcess p = new JProcess();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             while ((line = br.readLine()) != null) {
-                JProcess p = new JProcess();
+                p = new JProcess();
                 List<String> list = splitBySpaces(line);
                 p.pid = list.get(0);
                 p.username = list.get(1);
@@ -96,6 +97,8 @@ public class ProcessUtils {
                 p.command.trim();
                 processesList.add(p);
             }
+        } catch (Exception e){
+            throw new RuntimeException("Failed at process: \n"+p.toString()+"\n raw-line:\n"+line+"\n", e);
         }
         setParentChildProcesses(processesList);
         return processesList;
