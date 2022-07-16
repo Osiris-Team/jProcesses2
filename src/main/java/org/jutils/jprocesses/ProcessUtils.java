@@ -1,15 +1,13 @@
 package org.jutils.jprocesses;
 
+import com.sun.jna.Platform;
+import com.sun.jna.platform.win32.Kernel32;
 import org.jutils.jprocesses.util.OS;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 public class ProcessUtils {
 
@@ -298,5 +296,32 @@ public class ProcessUtils {
                 }
             }
         }).start();
+    }
+
+    /**
+     *
+     * @param exeFile The executable program. Example: "C:\Windows\notepad.exe". Must not be .exe, can be anything that is executable.
+     * @param workingDir The working directory of the new process. If null current working directory is used.
+     * @param enviornment
+     * @param input
+     * @param errorInput
+     * @param output
+     * @return
+     * @throws Exception when the process could not be started.
+     * @throws NullPointerException when a required parameter is null.
+     */
+    public JProcess startProcess(File exeFile, String args, File workingDir, Map<String, String> enviornment,
+                                 InputStream input, InputStream errorInput, OutputStream output) throws Exception {
+        Objects.requireNonNull(exeFile);
+        String command = "\""+exeFile.getPath()+"\"";
+        if(args!=null) command = command +" "+args;
+
+        if(Platform.isWindows()){
+            //TODO boolean success = Kernel32.INSTANCE.CreateProcess(command, null, );
+            //if (!success) throw new Exception("Failed to start process with command '"+exeFile+"'!");
+        } else{
+            // TODO
+        }
+        return null;// TODO
     }
 }
