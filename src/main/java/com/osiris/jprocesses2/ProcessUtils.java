@@ -271,7 +271,7 @@ public class ProcessUtils {
     /**
      * REPL for fetching and displaying process information.
      */
-    public void initCMDTool() {
+    public void initCMDTool(final String _command) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -284,9 +284,12 @@ public class ProcessUtils {
                     List<JProcess> processes = processUtils.getProcesses();
                     out.println("Done!");
                     boolean exit = false;
-                    String command = null;
                     while (!exit) {
-                        command = scanner.nextLine();
+                        String command = _command;
+                        if(command != null){
+                            exit = true;
+                        } else
+                            command = scanner.nextLine();
                         try {
                             if (command.equals("exit")) {
                                 exit = true;

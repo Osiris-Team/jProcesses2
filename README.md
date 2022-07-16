@@ -43,8 +43,8 @@ class Example{
 }
 ```
 ### CMDTool
-You can also use this as command line tool, by downloading the jar from here: https://jitpack.io/com/github/Osiris-Team/jProcesses2/2.1.3/jProcesses2-2.1.3.jar 
-and running it with `java -jar jProcesses2-2.1.3.jar`.
+You can also use this as command line tool, by downloading the jar from the latest release.
+and running it with `java -jar jP2.jar`.
 ```java
 out.println("Available commands:");
 out.println("help | Prints all available commands. (Shortcut: h)");
@@ -53,3 +53,5 @@ out.println("fetch | Fetches all currently running processes details. (f)");
 out.println("print | Prints a list with all processes details. (p)");
 out.println("print tree | Prints a list with all processes details but also their parent/child relations. (pt)");
 ```
+It's also possible to run a command directly, without entering the REPL like so
+for example: `java -jar jP2.jar print`
