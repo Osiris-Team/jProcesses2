@@ -8,8 +8,8 @@ public class JProcessExtraTest extends TestCase {
     ProcessUtils processUtils = new ProcessUtils();
 
     public void testExtraInfo() throws IOException, InterruptedException {
-        assertNotNull(processUtils.getThisProcess().getExtraInfo().threadCount);
-        assertNotNull(processUtils.getThisProcess().getExtraInfo().minorPageFaults);
+        assertNotNull(processUtils.getThis().getExtraInfo().threadCount);
+        assertNotNull(processUtils.getThis().getExtraInfo().minorPageFaults);
     }
 
 }

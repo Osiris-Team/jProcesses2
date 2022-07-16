@@ -10,10 +10,10 @@ import java.util.*;
 public class ProcessUtils {
 
     /**
-     * See {@link #getThisProcess(List)} for details.
+     * See {@link #getThis(List)} for details.
      */
-    public JProcess getThisProcess() throws IOException, InterruptedException {
-        return getThisProcess(getProcesses());
+    public JProcess getThis() throws IOException, InterruptedException {
+        return getThis(getProcesses());
     }
 
     /**
@@ -21,7 +21,7 @@ public class ProcessUtils {
      * or wasn't found in the provided processes list. <br>
      * Could happen when using a JVM/JDK distro that changed the value this method relies on. <br>
      */
-    public JProcess getThisProcess(List<JProcess> list) {
+    public JProcess getThis(List<JProcess> list) {
 
         String name = ManagementFactory.getRuntimeMXBean().getName();
         int index = name.indexOf("@");
@@ -33,6 +33,35 @@ public class ProcessUtils {
                 return p;
         }
         return null;
+    }
+
+    public JProcess getByPID(String pid) throws IOException {
+        for (JProcess process : getProcesses()) {
+            if(Objects.equals(process.pid, pid)) return process;
+        }
+        return null;
+    }
+
+    public JProcess getByCommand(String command) throws IOException {
+        for (JProcess process : getProcesses()) {
+            if(Objects.equals(process.command, command)) return process;
+        }
+        return null;
+    }
+
+    public JProcess getByName(String name) throws IOException {
+        for (JProcess process : getProcesses()) {
+            if(Objects.equals(process.name, name)) return process;
+        }
+        return null;
+    }
+
+    public List<JProcess> getForUser(String username) throws IOException {
+        List<JProcess> list = new ArrayList<>();
+        for (JProcess process : getProcesses()) {
+            if(Objects.equals(process.username, username)) list.add(process);
+        }
+        return list;
     }
 
     /**

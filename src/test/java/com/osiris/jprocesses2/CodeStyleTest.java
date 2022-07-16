@@ -35,7 +35,7 @@ public class CodeStyleTest {
         }
 
         // Easy access to the running JVM process:
-        JProcess thisProcess = processUtils.getThisProcess(list);
+        JProcess thisProcess = processUtils.getThis(list);
 
         // Print parent/child processes in a tree:
         processUtils.printTree(list);
