@@ -80,6 +80,7 @@ public class ProcessUtils {
         String line = "";
         JProcess p = new JProcess();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            br.readLine(); // Skip first line since it only contains the captions
             while ((line = br.readLine()) != null) {
                 p = new JProcess();
                 List<String> list = splitBySpaces(line);
